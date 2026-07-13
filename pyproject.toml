@@ -1,0 +1,42 @@
+[project]
+name = "decodo"
+version = "2.2.0"
+description = "Official Python SDK for the Decodo APIs"
+requires-python = ">=3.12"
+dependencies = [
+    "httpx>=0.27.0",
+    "jsonschema>=4.23.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-mock>=3.14.0",
+    "ruff>=0.4.0",
+    "mypy>=1.10.0",
+    "types-jsonschema>=4.23.0",
+]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 88
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+
+[tool.mypy]
+strict = true
+packages = ["decodo"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[project.scripts]
+decodo-codegen = "decodo.codegen.codegen:main"
