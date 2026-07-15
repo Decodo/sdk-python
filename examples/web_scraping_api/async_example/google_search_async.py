@@ -1,6 +1,4 @@
-"""Async (polling) Google Search scrape example."""
-from __future__ import annotations
-
+import json
 import os
 import time
 
@@ -14,25 +12,21 @@ client = DecodoClient(
     )
 )
 
-task = client.web_scraping_api.scrape_async(
+metadata = client.web_scraping_api.scrape_async(
     GoogleSearchParams(
         target=Target.GoogleSearch,
-        query="Python web scraping",
+        query='shoes',
+        geo='United States',
         parse=True,
     )
 )
 
-task_id = task["id"]
-print(f"Task created: {task_id}")
+print('Polling for results...')
 
 while True:
-    status = client.web_scraping_api.get_status(task_id)
-    print(f"Status: {status.get('status')}")
-
-    if status.get("status") in ("done", "faulted"):
+    print('Polling for results...')
+    results = client.web_scraping_api.get_results(metadata['id'])
+    if results:
+        print(json.dumps(results['results'][0]['content'], indent=2))
         break
-
-    time.sleep(2)
-
-results = client.web_scraping_api.get_results(task_id)
-print(results)
+    time.sleep(3)

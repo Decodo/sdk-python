@@ -1,7 +1,6 @@
-"""Batch Google Search scrape example."""
-from __future__ import annotations
-
+import json
 import os
+import time
 
 from decodo import DecodoClient, DecodoConfig, GoogleSearchParams, Target, WebScrapingApiConfig
 
@@ -13,14 +12,26 @@ client = DecodoClient(
     )
 )
 
-batch = client.web_scraping_api.scrape_batch(
+metadata = client.web_scraping_api.scrape_batch(
     GoogleSearchParams(
         target=Target.GoogleSearch,
-        query="Python web scraping",
+        query=['shoes', 'laptop'],
         parse=True,
     )
 )
 
-print(f"Batch ID: {batch.get('id')}")
-for query_result in batch.get("queries", []):
-    print(f"  Task {query_result.get('id')}: {query_result.get('status')}")
+print('Polling for results...')
+
+while True:
+    print('Polling for results...')
+    queries = metadata.get('queries') or []
+    if not queries:
+        break
+    first_task_id = queries[0].get('id')
+    if not first_task_id:
+        break
+    results = client.web_scraping_api.get_results(first_task_id)
+    if results:
+        print(json.dumps(results['results'][0]['content'], indent=2))
+        break
+    time.sleep(3)
