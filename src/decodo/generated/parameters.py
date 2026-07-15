@@ -14,7 +14,6 @@ class ParameterMeta(TypedDict, total=False):
 
 
 parameter_meta: dict[str, ParameterMeta] = {
-    "360": ParameterMeta(type="boolean"),
     "callback_url": ParameterMeta(type="string"),
     "query": ParameterMeta(type="string", max_length=2048),
     "headless": ParameterMeta(type="string", enum=["html", "png"]),
@@ -65,17 +64,22 @@ parameter_meta: dict[str, ParameterMeta] = {
     "payload": ParameterMeta(type="string"),
     "proxy_pool": ParameterMeta(type="string", enum=["standard", "premium"]),
     "http_method": ParameterMeta(type="string"),
-    "successful_status_codes": ParameterMeta(type="array", items={"type": "number"}),
+    "successful_status_codes": ParameterMeta(type="array", items={'type': "number"}),
     "headers": ParameterMeta(type="object"),
     "cookies": ParameterMeta(type="object"),
     "force_headers": ParameterMeta(type="boolean"),
     "force_cookies": ParameterMeta(type="boolean"),
     "prompt": ParameterMeta(type="string", max_length=8192),
     "search": ParameterMeta(type="boolean"),
+    "country": ParameterMeta(type="string"),
+    "sort": ParameterMeta(type="string"),
+    "360": ParameterMeta(type="boolean"),
     "upload_date": ParameterMeta(type="string"),
     "type": ParameterMeta(type="string"),
     "duration": ParameterMeta(type="string"),
     "video_sort_by": ParameterMeta(type="string"),
+    "3d": ParameterMeta(type="boolean"),
+    "4k": ParameterMeta(type="boolean"),
     "creative_commons": ParameterMeta(type="boolean"),
     "hd": ParameterMeta(type="boolean"),
     "hdr": ParameterMeta(type="boolean"),
@@ -86,6 +90,4 @@ parameter_meta: dict[str, ParameterMeta] = {
     "subtitles": ParameterMeta(type="boolean"),
     "subtitle_origin": ParameterMeta(type="string"),
     "limit": ParameterMeta(type="number", minimum=0, maximum=100),
-    "sort": ParameterMeta(type="string"),
-    "country": ParameterMeta(type="string"),
 }

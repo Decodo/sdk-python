@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import os
 
-from decodo import DecodoClient, DecodoConfig, WebScrapingApiConfig
+from decodo import DecodoClient, DecodoConfig, GoogleSearchParams, Target, WebScrapingApiConfig
 
 token = os.environ["DECODO_TOKEN"]
 
@@ -14,10 +14,11 @@ client = DecodoClient(
 )
 
 batch = client.web_scraping_api.scrape_batch(
-    {
-        "target": "google_search",
-        "query": ["Python web scraping", "httpx tutorial", "decodo api"],
-    }
+    GoogleSearchParams(
+        target=Target.GoogleSearch,
+        query="Python web scraping",
+        parse=True,
+    )
 )
 
 print(f"Batch ID: {batch.get('id')}")

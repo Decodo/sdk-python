@@ -35,6 +35,16 @@ def _json_schema_type_to_python(schema: dict[str, Any]) -> str:
     return "Any"
 
 
+def _is_valid_identifier(name: str) -> bool:
+    return name.isidentifier() and not name[0].isdigit()
+
+
+def _sanitize_field_name(name: str) -> str:
+    if _is_valid_identifier(name):
+        return name
+    return f"f{name}"
+
+
 def _get_target_parameter_keys(parameter_schema: dict[str, Any]) -> list[str]:
     properties: dict = parameter_schema.get("properties", {})
     return [k for k in properties if k != "target"]
@@ -47,7 +57,9 @@ def _get_targets_file_contents(api: WebScrapingApiIR) -> str:
     lines.append("from __future__ import annotations")
     lines.append("")
     lines.append("from enum import Enum")
-    lines.append("from typing import Any, Literal, TypedDict, Union")
+    lines.append("from typing import Annotated, Any, Literal, Union")
+    lines.append("")
+    lines.append("import pydantic")
     lines.append("")
 
     target_keys = list(api["targets"].keys())
@@ -64,25 +76,36 @@ def _get_targets_file_contents(api: WebScrapingApiIR) -> str:
     lines.append("targets: list[str] = [t.value for t in Target]")
     lines.append("")
 
-    for target_key, target in api["targets"].items():
-        type_name = f"{to_pascal_case(target_key)}Params"
-        properties: dict = target["parameter_schema"].get("properties", {})
-        required: list[str] = target["parameter_schema"].get("required", [])
+    # Override class names for target keys that conflict with reserved names
+    CLASS_NAME_OVERRIDES: dict[str, str] = {
+        "target": "TargetStoreParams",
+    }
 
-        lines.append(f"class {type_name}(TypedDict, total=False):")
+    def _class_name(target_key: str) -> str:
+        if target_key in CLASS_NAME_OVERRIDES:
+            return CLASS_NAME_OVERRIDES[target_key]
+        return f"{to_pascal_case(target_key)}Params"
+
+    for target_key, target in api["targets"].items():
+        type_name = _class_name(target_key)
+        member = to_enum_member_name(target_key)
+        properties: dict = target["parameter_schema"].get("properties", {})
+
+        lines.append(f"class {type_name}(pydantic.BaseModel):")
+        lines.append(f"    model_config = pydantic.ConfigDict(populate_by_name=True)")
+        lines.append(f"    target: Literal[Target.{member}] = Target.{member}")
         params = {k: v for k, v in properties.items() if k != "target"}
         if params:
             for param_key, param_schema in params.items():
                 python_type = _json_schema_type_to_python(param_schema)
-                if param_key in required:
-                    lines.append(f"    {param_key}: {python_type}  # required")
+                field_name = _sanitize_field_name(param_key)
+                if field_name != param_key:
+                    lines.append(f"    {field_name}: {python_type} | None = pydantic.Field(None, alias={json.dumps(param_key)})")
                 else:
-                    lines.append(f"    {param_key}: {python_type}")
-        else:
-            lines.append("    pass")
+                    lines.append(f"    {field_name}: {python_type} | None = None")
         lines.append("")
 
-    lines.append("class TargetMeta(TypedDict):")
+    lines.append("class TargetMeta(pydantic.BaseModel):")
     lines.append("    group: str")
     lines.append("    response_format: str")
     lines.append("    parameters: list[str]")
@@ -101,16 +124,13 @@ def _get_targets_file_contents(api: WebScrapingApiIR) -> str:
     lines.append("}")
     lines.append("")
 
-    if target_keys:
-        union_types = " | ".join(
-            f"dict[str, Any]"
-            for _ in target_keys
-        )
-        lines.append("ScrapeRequest = dict[str, Any]")
-        lines.append("BatchRequest = dict[str, Any]")
-    else:
-        lines.append("ScrapeRequest = dict[str, Any]")
-        lines.append("BatchRequest = dict[str, Any]")
+    # Discriminated union for ScrapeRequest / BatchRequest
+    union_parts = " | ".join(_class_name(k) for k in target_keys)
+    lines.append(f"ScrapeRequest = Annotated[")
+    lines.append(f"    Union[{union_parts}],")
+    lines.append(f"    pydantic.Field(discriminator='target'),")
+    lines.append(f"]")
+    lines.append(f"BatchRequest = ScrapeRequest")
     lines.append("")
 
     return "\n".join(lines)

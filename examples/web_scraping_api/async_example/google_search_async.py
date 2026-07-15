@@ -4,7 +4,7 @@ from __future__ import annotations
 import os
 import time
 
-from decodo import DecodoClient, DecodoConfig, WebScrapingApiConfig
+from decodo import DecodoClient, DecodoConfig, GoogleSearchParams, Target, WebScrapingApiConfig
 
 token = os.environ["DECODO_TOKEN"]
 
@@ -15,10 +15,11 @@ client = DecodoClient(
 )
 
 task = client.web_scraping_api.scrape_async(
-    {
-        "target": "google_search",
-        "query": "Python web scraping",
-    }
+    GoogleSearchParams(
+        target=Target.GoogleSearch,
+        query="Python web scraping",
+        parse=True,
+    )
 )
 
 task_id = task["id"]
