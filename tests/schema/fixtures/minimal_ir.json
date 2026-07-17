@@ -1,0 +1,35 @@
+{
+  "version": "1.0.0",
+  "apis": {
+    "webScrapingApi": {
+      "parameters": {
+        "GEOLOCATION_NAME": {
+          "type": "string",
+          "description": "Shared geolocation parameter"
+        }
+      },
+      "targets": {
+        "google_search": {
+          "group": "Google",
+          "response_format": "json",
+          "parameter_schema": {
+            "type": "object",
+            "properties": {
+              "target": {
+                "type": "string",
+                "const": "google_search"
+              },
+              "query": {
+                "type": "string"
+              },
+              "parse": {
+                "type": "boolean"
+              }
+            },
+            "required": ["target", "query"]
+          }
+        }
+      }
+    }
+  }
+}
