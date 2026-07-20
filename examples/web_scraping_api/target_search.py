@@ -1,7 +1,13 @@
 import json
 import os
 
-from decodo import DecodoClient, DecodoConfig, Target, TargetSearchParams, WebScrapingApiConfig
+from decodo import (
+    DecodoClient,
+    DecodoConfig,
+    Target,
+    TargetSearchParams,
+    WebScrapingApiConfig,
+)
 
 token = os.environ["DECODO_TOKEN"]
 

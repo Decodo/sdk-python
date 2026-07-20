@@ -28,9 +28,9 @@ def _compare_semver(left: str, right: str) -> int:
             return 1
         return 0
 
-    for l, r in zip(parsed_left, parsed_right):
-        if l != r:
-            return l - r
+    for lv, r in zip(parsed_left, parsed_right):
+        if lv != r:
+            return lv - r
 
     return 0
 

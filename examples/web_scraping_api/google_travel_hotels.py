@@ -1,7 +1,13 @@
 import json
 import os
 
-from decodo import DecodoClient, DecodoConfig, GoogleTravelHotelsParams, Target, WebScrapingApiConfig
+from decodo import (
+    DecodoClient,
+    DecodoConfig,
+    GoogleTravelHotelsParams,
+    Target,
+    WebScrapingApiConfig,
+)
 
 token = os.environ["DECODO_TOKEN"]
 

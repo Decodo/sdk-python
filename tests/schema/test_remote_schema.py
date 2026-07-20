@@ -3,12 +3,11 @@ from __future__ import annotations
 import json
 import os
 import tempfile
+from collections.abc import Generator
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Generator
+from typing import Any
 from unittest.mock import MagicMock, patch
-
-import pytest
 
 from decodo.schema.constants import (
     DEFAULT_IR_BASE,
@@ -71,7 +70,8 @@ class TestRemoteSchemaLoad:
             assert call_count == 1
             assert schema.version == "1.0.0"
             assert schema.list_targets() == ["google_search"]
-            assert "query" in (schema.get_target_meta("google_search") or {}).get("parameters", [])
+            target_meta = schema.get_target_meta("google_search")
+            assert target_meta is not None and "query" in target_meta["parameters"]
             assert "GEOLOCATION_NAME" in schema.get_shared_parameters()
 
             with open(cache_path, encoding="utf-8") as f:

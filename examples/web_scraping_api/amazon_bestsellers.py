@@ -1,7 +1,13 @@
 import json
 import os
 
-from decodo import AmazonBestsellersParams, DecodoClient, DecodoConfig, Target, WebScrapingApiConfig
+from decodo import (
+    AmazonBestsellersParams,
+    DecodoClient,
+    DecodoConfig,
+    Target,
+    WebScrapingApiConfig,
+)
 
 token = os.environ["DECODO_TOKEN"]
 

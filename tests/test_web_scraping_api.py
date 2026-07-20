@@ -8,7 +8,7 @@ import pytest
 from decodo.api.web_scraping_api import WebScrapingApi
 from decodo.errors import ValidationError
 from decodo.schema.bundled_schema import BundledSchema
-from decodo.schema.types import DecodoSchema, TargetMeta
+from decodo.schema.types import TargetMeta
 
 
 class _StrictSchema:
@@ -50,18 +50,18 @@ def _make_http_mock() -> MagicMock:
 class TestWebScrapingApiValidation:
     def test_throws_validation_error_before_http_when_schema_rejects(self) -> None:
         http = _make_http_mock()
-        api = WebScrapingApi(http, _StrictSchema())  # type: ignore[arg-type]
+        api = WebScrapingApi(http, _StrictSchema())
 
         with pytest.raises(ValidationError):
-            api.scrape({"target": "google_search", "query": ""})
+            api.scrape({"target": "google_search", "query": ""})  # type: ignore[arg-type]
 
         http.post.assert_not_called()
 
     def test_calls_http_when_params_pass_schema_validation(self) -> None:
         http = _make_http_mock()
-        api = WebScrapingApi(http, _StrictSchema())  # type: ignore[arg-type]
+        api = WebScrapingApi(http, _StrictSchema())
 
-        api.scrape({"target": "google_search", "query": "coffee"})
+        api.scrape({"target": "google_search", "query": "coffee"})  # type: ignore[arg-type]
 
         http.post.assert_called_once()
 
@@ -69,6 +69,6 @@ class TestWebScrapingApiValidation:
         http = _make_http_mock()
         api = WebScrapingApi(http, BundledSchema.shared)
 
-        api.scrape({"target": "google_search", "query": "coffee"})
+        api.scrape({"target": "google_search", "query": "coffee"})  # type: ignore[arg-type]
 
         http.post.assert_called_once()

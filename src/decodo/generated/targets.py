@@ -2,9 +2,10 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Annotated, Any, Literal, Union
+from typing import Annotated, Any, Literal
 
 import pydantic
+
 
 class Target(str, Enum):
     UniversalEcommerce = "universal_ecommerce"
@@ -983,7 +984,7 @@ target_meta: dict[str, TargetMeta] = {
 }
 
 ScrapeRequest = Annotated[
-    Union[UniversalEcommerceParams | GoogleSearchParams | GoogleTravelHotelsParams | GoogleTrendsExploreParams | GoogleShoppingSearchParams | GoogleShoppingProductParams | GoogleParams | GoogleSuggestParams | GoogleMapsParams | GoogleAiModeParams | GoogleAdsParams | GoogleLensParams | BingSearchParams | BingParams | YoutubeTranscriptParams | AmazonProductParams | AmazonPricingParams | AmazonSearchParams | AmazonSellersParams | AmazonBestsellersParams | AmazonParams | EcommerceParams | WalmartProductParams | WalmartSearchParams | WalmartParams | TargetProductParams | TargetSearchParams | TargetStoreParams | LowesSearchParams | UniversalParams | ChatgptParams | PerplexityParams | GeminiParams | BbbParams | AutotraderParams | MobileParams | AirbnbParams | AppleAppStoreParams | InstagramGraphqlProfileParams | TiktokPostParams | TiktokShopSearchParams | TiktokShopProductParams | TiktokParams | RedditPostParams | RedditSubredditParams | RedditUserParams | YoutubeVideoParams | YoutubeMetadataParams | YoutubeSearchParams | YoutubeSearchMaxParams | YoutubeSubtitlesParams | YoutubeChannelParams],
+    UniversalEcommerceParams | GoogleSearchParams | GoogleTravelHotelsParams | GoogleTrendsExploreParams | GoogleShoppingSearchParams | GoogleShoppingProductParams | GoogleParams | GoogleSuggestParams | GoogleMapsParams | GoogleAiModeParams | GoogleAdsParams | GoogleLensParams | BingSearchParams | BingParams | YoutubeTranscriptParams | AmazonProductParams | AmazonPricingParams | AmazonSearchParams | AmazonSellersParams | AmazonBestsellersParams | AmazonParams | EcommerceParams | WalmartProductParams | WalmartSearchParams | WalmartParams | TargetProductParams | TargetSearchParams | TargetStoreParams | LowesSearchParams | UniversalParams | ChatgptParams | PerplexityParams | GeminiParams | BbbParams | AutotraderParams | MobileParams | AirbnbParams | AppleAppStoreParams | InstagramGraphqlProfileParams | TiktokPostParams | TiktokShopSearchParams | TiktokShopProductParams | TiktokParams | RedditPostParams | RedditSubredditParams | RedditUserParams | YoutubeVideoParams | YoutubeMetadataParams | YoutubeSearchParams | YoutubeSearchMaxParams | YoutubeSubtitlesParams | YoutubeChannelParams,
     pydantic.Field(discriminator='target'),
 ]
 BatchRequest = ScrapeRequest

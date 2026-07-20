@@ -3,9 +3,9 @@ from __future__ import annotations
 import json
 import os
 import re
-import sys
 import warnings
 from pathlib import Path
+from typing import cast
 
 import httpx
 
@@ -49,7 +49,7 @@ def fetch_intermediate_representation() -> IR:
         os.makedirs(os.path.dirname(local_ir_path), exist_ok=True)
         with open(local_ir_path, "w", encoding="utf-8") as f:
             f.write(raw)
-        return json.loads(raw)
+        return cast(IR, json.loads(raw))
     except Exception as err:
         message = str(err)
         if os.path.exists(local_ir_path):
@@ -58,7 +58,7 @@ def fetch_intermediate_representation() -> IR:
                 stacklevel=2,
             )
             with open(local_ir_path, encoding="utf-8") as f:
-                return json.load(f)
+                return cast(IR, json.load(f))
         raise RuntimeError(
             f"Failed to fetch IR ({message}) and no local cache found at {local_ir_path}."
         ) from None
