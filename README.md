@@ -39,7 +39,7 @@ Instead of manually constructing HTTP requests and validating payloads, you can 
 ## Installation
 
 ```bash
-pip install decodo
+pip install decodo-sdk
 ```
 
 ## Quick start
@@ -50,7 +50,7 @@ Create a new project:
 mkdir scrape-with-decodo
 cd scrape-with-decodo
 
-pip install decodo
+pip install decodo-sdk
 
 touch main.py
 ```

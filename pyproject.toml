@@ -1,5 +1,5 @@
 [project]
-name = "decodo"
+name = "decodo-sdk"
 version = "2.2.0"
 description = "Official Python SDK for the Decodo APIs"
 readme = "README.md"
