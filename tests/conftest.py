@@ -1,12 +1,10 @@
 from __future__ import annotations
 
 import json
-import os
 from pathlib import Path
 from typing import Any
 
 import pytest
-
 
 MINIMAL_IR_PATH = Path(__file__).parent / "schema" / "fixtures" / "minimal_ir.json"
 

@@ -92,7 +92,7 @@ def _get_targets_file_contents(api: WebScrapingApiIR) -> str:
         properties: dict = target["parameter_schema"].get("properties", {})
 
         lines.append(f"class {type_name}(pydantic.BaseModel):")
-        lines.append(f"    model_config = pydantic.ConfigDict(populate_by_name=True)")
+        lines.append("    model_config = pydantic.ConfigDict(populate_by_name=True)")
         lines.append(f"    target: Literal[Target.{member}] = Target.{member}")
         params = {k: v for k, v in properties.items() if k != "target"}
         if params:
@@ -100,7 +100,7 @@ def _get_targets_file_contents(api: WebScrapingApiIR) -> str:
                 python_type = _json_schema_type_to_python(param_schema)
                 field_name = _sanitize_field_name(param_key)
                 if field_name != param_key:
-                    lines.append(f"    {field_name}: {python_type} | None = pydantic.Field(None, alias={json.dumps(param_key)})")
+                    lines.append(f"    {field_name}: {python_type} | None = pydantic.Field(None, alias={json.dumps(param_key)})")  # noqa: E501
                 else:
                     lines.append(f"    {field_name}: {python_type} | None = None")
         lines.append("")
@@ -126,11 +126,11 @@ def _get_targets_file_contents(api: WebScrapingApiIR) -> str:
 
     # Discriminated union for ScrapeRequest / BatchRequest
     union_parts = " | ".join(_class_name(k) for k in target_keys)
-    lines.append(f"ScrapeRequest = Annotated[")
+    lines.append("ScrapeRequest = Annotated[")
     lines.append(f"    Union[{union_parts}],")
-    lines.append(f"    pydantic.Field(discriminator='target'),")
-    lines.append(f"]")
-    lines.append(f"BatchRequest = ScrapeRequest")
+    lines.append("    pydantic.Field(discriminator='target'),")
+    lines.append("]")
+    lines.append("BatchRequest = ScrapeRequest")
     lines.append("")
 
     return "\n".join(lines)

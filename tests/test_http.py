@@ -4,10 +4,8 @@ from typing import Any
 from unittest.mock import MagicMock, patch
 
 import httpx
-import pytest
 
 from decodo.http import BasicAuth, HttpClient, HttpClientConfig
-
 
 BASE_CONFIG = HttpClientConfig(
     base_url="https://api.test",

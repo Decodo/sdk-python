@@ -8,7 +8,6 @@ from .shared import (
     fetch_intermediate_representation,
     local_ir_path,
     out_dir,
-    prop_key,
 )
 from .types import WebScrapingApiIR
 

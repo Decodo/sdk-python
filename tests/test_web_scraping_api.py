@@ -8,7 +8,7 @@ import pytest
 from decodo.api.web_scraping_api import WebScrapingApi
 from decodo.errors import ValidationError
 from decodo.schema.bundled_schema import BundledSchema
-from decodo.schema.types import DecodoSchema, TargetMeta
+from decodo.schema.types import TargetMeta
 
 
 class _StrictSchema:

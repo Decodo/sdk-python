@@ -3,12 +3,11 @@ from __future__ import annotations
 import json
 import os
 import tempfile
+from collections.abc import Generator
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Generator
+from typing import Any
 from unittest.mock import MagicMock, patch
-
-import pytest
 
 from decodo.schema.constants import (
     DEFAULT_IR_BASE,

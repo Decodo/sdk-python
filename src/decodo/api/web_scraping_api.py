@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from decodo.errors import ValidationError
-from decodo.http import HttpClient
 from decodo.generated.targets import ScrapeRequest
+from decodo.http import HttpClient
 from decodo.types.responses import (
     AsyncTaskResponse,
     BatchResponse,
