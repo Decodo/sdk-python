@@ -70,7 +70,8 @@ class TestRemoteSchemaLoad:
             assert call_count == 1
             assert schema.version == "1.0.0"
             assert schema.list_targets() == ["google_search"]
-            assert "query" in (schema.get_target_meta("google_search") or {}).get("parameters", [])
+            target_meta = schema.get_target_meta("google_search")
+            assert target_meta is not None and "query" in target_meta["parameters"]
             assert "GEOLOCATION_NAME" in schema.get_shared_parameters()
 
             with open(cache_path, encoding="utf-8") as f:

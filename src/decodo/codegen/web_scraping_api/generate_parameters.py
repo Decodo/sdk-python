@@ -69,7 +69,7 @@ def _format_parameter_meta(meta: _ParameterMeta) -> str:
 def _collect_parameter_meta(api: WebScrapingApiIR) -> dict[str, _ParameterMeta]:
     collected: dict[str, _ParameterMeta] = {}
     for target in api["targets"].values():
-        properties: dict = target["parameter_schema"].get("properties", {})
+        properties: dict[str, Any] = target["parameter_schema"].get("properties", {})
         for name, schema in properties.items():
             if name == "target":
                 continue

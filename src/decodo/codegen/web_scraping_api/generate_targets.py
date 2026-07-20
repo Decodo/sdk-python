@@ -46,7 +46,7 @@ def _sanitize_field_name(name: str) -> str:
 
 
 def _get_target_parameter_keys(parameter_schema: dict[str, Any]) -> list[str]:
-    properties: dict = parameter_schema.get("properties", {})
+    properties: dict[str, Any] = parameter_schema.get("properties", {})
     return [k for k in properties if k != "target"]
 
 
@@ -89,7 +89,7 @@ def _get_targets_file_contents(api: WebScrapingApiIR) -> str:
     for target_key, target in api["targets"].items():
         type_name = _class_name(target_key)
         member = to_enum_member_name(target_key)
-        properties: dict = target["parameter_schema"].get("properties", {})
+        properties: dict[str, Any] = target["parameter_schema"].get("properties", {})
 
         lines.append(f"class {type_name}(pydantic.BaseModel):")
         lines.append("    model_config = pydantic.ConfigDict(populate_by_name=True)")

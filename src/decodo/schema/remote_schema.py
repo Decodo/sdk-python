@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import os
 import time
-from typing import Any
+from typing import Any, cast
 
 import httpx
 
@@ -23,7 +23,7 @@ from .types import (
 def _read_cached_ir(cache_path: str) -> CachedIr | None:
     try:
         with open(cache_path, encoding="utf-8") as f:
-            return json.load(f)
+            return cast(CachedIr, json.load(f))
     except Exception:
         return None
 
@@ -38,7 +38,7 @@ def _fetch_ir(url: str) -> RemoteIr:
     response = httpx.get(url, headers={"Accept": "application/json"})
     if not response.is_success:
         raise RuntimeError(f"Failed to fetch IR from {url}: HTTP {response.status_code}")
-    return response.json()
+    return cast(RemoteIr, response.json())
 
 
 def _write_cached_ir(cache_path: str, cached: CachedIr) -> None:

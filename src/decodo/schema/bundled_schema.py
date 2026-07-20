@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, ClassVar, cast
 
 from decodo.generated.request_schemas import request_json_schemas
 from decodo.generated.targets import target_meta, targets
@@ -9,6 +9,8 @@ from .types import DecodoSchema, TargetMeta
 
 
 class BundledSchema:
+    shared: ClassVar[BundledSchema]
+
     def get_request_schema(self, target: str) -> dict[str, Any] | None:
         return request_json_schemas.get(target)
 
@@ -16,7 +18,7 @@ class BundledSchema:
         return list(targets)
 
     def get_target_meta(self, target: str) -> TargetMeta | None:
-        return target_meta.get(target)
+        return cast(TargetMeta, target_meta.get(target))
 
     def get_target_parameter_schema(self, target: str) -> dict[str, Any] | None:
         return request_json_schemas.get(target)
@@ -29,7 +31,7 @@ class BundledSchema:
         return None
 
 
-BundledSchema.shared: BundledSchema = BundledSchema()  # type: ignore[attr-defined]
+BundledSchema.shared = BundledSchema()
 
 # Satisfy DecodoSchema protocol
-_: DecodoSchema = BundledSchema.shared  # type: ignore[attr-defined]
+_: DecodoSchema = BundledSchema.shared

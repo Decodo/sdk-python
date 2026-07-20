@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+from typing import Any
+
 from .types import IrTarget, TargetMeta
 
 
-def _get_target_parameter_keys(parameter_schema: dict) -> list[str]:
-    properties: dict = parameter_schema.get("properties", {})
+def _get_target_parameter_keys(parameter_schema: dict[str, Any]) -> list[str]:
+    properties: dict[str, Any] = parameter_schema.get("properties", {})
     return [key for key in properties if key != "target"]
 
 

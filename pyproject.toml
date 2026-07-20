@@ -50,6 +50,7 @@ select = ["E", "F", "I", "UP"]
 [tool.mypy]
 strict = true
 packages = ["decodo"]
+exclude = "src/decodo/generated|^examples/"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
