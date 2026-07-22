@@ -42,6 +42,12 @@ Instead of manually constructing HTTP requests and validating payloads, you can 
 pip install decodo-sdk
 ```
 
+Until the package is published to PyPI, install directly from the repository (requires access):
+
+```bash
+pip install "git+https://github.com/Decodo/sdk-python.git"
+```
+
 ## Quick start
 
 Create a new project:
@@ -55,22 +61,26 @@ pip install decodo-sdk
 touch main.py
 ```
 
-Get a Web Scraping API basic authentication token from the [Decodo dashboard](https://dashboard.decodo.com/welcome) and use it in the following example:
+Get your Web Scraping API token from the [Decodo dashboard](https://dashboard.decodo.com/welcome). The token is the base64-encoded `user:password` value from the Basic Auth credentials shown in the dashboard.
 
 ```python
 # main.py
-from decodo import DecodoClient, Target
+from decodo import DecodoClient, DecodoConfig, GoogleSearchParams, Target, WebScrapingApiConfig
 
 client = DecodoClient(
-    web_scraping_api={"token": "<basic_auth_token>"}
+    DecodoConfig(
+        web_scraping_api=WebScrapingApiConfig(token="<basic_auth_token>"),
+    )
 )
 
-result = client.web_scraping_api.scrape({
-    "target": Target.GoogleSearch,
-    "query": "coffee shops",
-    "geo": "United States",
-    "parse": True,
-})
+result = client.web_scraping_api.scrape(
+    GoogleSearchParams(
+        target=Target.GoogleSearch,
+        query="coffee shops",
+        geo="United States",
+        parse=True,
+    )
+)
 print(result)
 ```
 
@@ -162,39 +172,41 @@ python main.py
 ## Configuration
 
 ```python
-from decodo import DecodoClient
+from decodo import DecodoClient, DecodoConfig, WebScrapingApiConfig
 
 client = DecodoClient(
-    web_scraping_api={"token": "<basic_auth_token>"},
-    timeout_ms=120_000,  # optional, request timeout in ms (default: 180000)
+    DecodoConfig(
+        web_scraping_api=WebScrapingApiConfig(token="<basic_auth_token>"),
+        timeout_ms=120_000,  # optional, request timeout in ms (default: 180000)
+    )
 )
 ```
 
 | Parameter | Description |
 | --- | --- |
-| `token` | Web Scraping API basic authentication token |
+| `token` | Web Scraping API basic auth token - the base64-encoded `user:password` string from the Decodo dashboard |
 | `timeout_ms` | Request timeout in milliseconds (default: 180000) |
 
 ## Web Scraping API
 
 Access the API via `client.web_scraping_api`.
 
-The snippets below assume you have already imported `Target` (and `DecodoClient` where a client is constructed), for example:
-
-```python
-from decodo import DecodoClient, Target
-```
+The snippets below assume you have already constructed a client. See [Configuration](#configuration) for how to build one.
 
 ### Sync scrape
 
 Waits for the scraping result before returning:
 
 ```python
-result = client.web_scraping_api.scrape({
-    "target": Target.AmazonProduct,
-    "query": "B09H74FXNW",
-    "parse": True,
-})
+from decodo import AmazonProductParams, Target
+
+result = client.web_scraping_api.scrape(
+    AmazonProductParams(
+        target=Target.AmazonProduct,
+        query="B09H74FXNW",
+        parse=True,
+    )
+)
 ```
 
 ### Async scrape
@@ -202,11 +214,15 @@ result = client.web_scraping_api.scrape({
 Creates a scraping task and returns immediately. Poll separately for task status and results:
 
 ```python
-task = client.web_scraping_api.scrape_async({
-    "target": Target.GoogleSearch,
-    "query": "laptop reviews",
-    "parse": True,
-})
+from decodo import GoogleSearchParams, Target
+
+task = client.web_scraping_api.scrape_async(
+    GoogleSearchParams(
+        target=Target.GoogleSearch,
+        query="laptop reviews",
+        parse=True,
+    )
+)
 
 meta = client.web_scraping_api.get_status(task["id"])
 print(meta["status"])  # 'pending' | 'done' | 'faulted'
@@ -219,11 +235,15 @@ results = client.web_scraping_api.get_results(task["id"])
 Send multiple queries or URLs in a single request:
 
 ```python
-batch = client.web_scraping_api.scrape_batch({
-    "target": Target.GoogleSearch,
-    "query": ["coffee", "tea", "juice"],
-    "parse": True,
-})
+from decodo import GoogleSearchBatchParams, Target
+
+batch = client.web_scraping_api.scrape_batch(
+    GoogleSearchBatchParams(
+        target=Target.GoogleSearch,
+        query=["coffee", "tea", "juice"],
+        parse=True,
+    )
+)
 
 coffee_task_id = batch["queries"][0]["id"]
 
@@ -305,18 +325,18 @@ from decodo import (
     Target,
 )
 
+from decodo import GoogleSearchParams
+
 try:
-    client.web_scraping_api.scrape({
-        "target": Target.GoogleSearch,
-        "query": "test",
-        "parse": True,
-    })
+    client.web_scraping_api.scrape(
+        GoogleSearchParams(target=Target.GoogleSearch, query="test", parse=True)
+    )
 except AuthenticationError:
-    pass  # 401/403 — bad credentials
+    pass  # 401/403 - bad credentials
 except RateLimitError:
-    pass  # 429 — too many requests
+    pass  # 429 - too many requests
 except ValidationError as err:
-    print(err.errors)  # 422 — invalid parameters
+    print(err.errors)  # 422 - invalid parameters
 except TimeoutError:
     pass  # request timed out
 ```
@@ -338,4 +358,3 @@ Build scraping workflows with the Decodo Web Scraping API:
 ## License
 
 Released under the [MIT License](https://github.com/Decodo/Decodo/blob/master/LICENSE).
->>>>>>> 03b68da (Initial sdk setup)
