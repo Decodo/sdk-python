@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Annotated, Any, Literal
+from typing import Annotated, Any, Literal, Union
 
 import pydantic
 
@@ -61,12 +61,15 @@ class Target(str, Enum):
     YoutubeSubtitles = "youtube_subtitles"
     YoutubeChannel = "youtube_channel"
 
+
 targets: list[str] = [t.value for t in Target]
+
 
 class UniversalEcommerceParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.UniversalEcommerce] = Target.UniversalEcommerce
     callback_url: str | None = None
+
 
 class GoogleSearchParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
@@ -89,6 +92,7 @@ class GoogleSearchParams(pydantic.BaseModel):
     page_count: float | None = None
     callback_url: str | None = None
 
+
 class GoogleTravelHotelsParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.GoogleTravelHotels] = Target.GoogleTravelHotels
@@ -105,6 +109,7 @@ class GoogleTravelHotelsParams(pydantic.BaseModel):
     markdown: bool | None = None
     callback_url: str | None = None
 
+
 class GoogleTrendsExploreParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.GoogleTrendsExplore] = Target.GoogleTrendsExplore
@@ -115,6 +120,7 @@ class GoogleTrendsExploreParams(pydantic.BaseModel):
     date_start: str | None = None
     date_end: str | None = None
     callback_url: str | None = None
+
 
 class GoogleShoppingSearchParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
@@ -132,6 +138,7 @@ class GoogleShoppingSearchParams(pydantic.BaseModel):
     markdown: bool | None = None
     callback_url: str | None = None
 
+
 class GoogleShoppingProductParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.GoogleShoppingProduct] = Target.GoogleShoppingProduct
@@ -148,6 +155,7 @@ class GoogleShoppingProductParams(pydantic.BaseModel):
     xhr: bool | None = None
     callback_url: str | None = None
 
+
 class GoogleParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.Google] = Target.Google
@@ -162,6 +170,7 @@ class GoogleParams(pydantic.BaseModel):
     page_count: float | None = None
     callback_url: str | None = None
 
+
 class GoogleSuggestParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.GoogleSuggest] = Target.GoogleSuggest
@@ -171,6 +180,7 @@ class GoogleSuggestParams(pydantic.BaseModel):
     locale: str | None = None
     session_id: str | None = None
     callback_url: str | None = None
+
 
 class GoogleMapsParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
@@ -189,6 +199,7 @@ class GoogleMapsParams(pydantic.BaseModel):
     markdown: bool | None = None
     callback_url: str | None = None
 
+
 class GoogleAiModeParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.GoogleAiMode] = Target.GoogleAiMode
@@ -200,6 +211,7 @@ class GoogleAiModeParams(pydantic.BaseModel):
     markdown: bool | None = None
     xhr: bool | None = None
     callback_url: str | None = None
+
 
 class GoogleAdsParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
@@ -221,6 +233,7 @@ class GoogleAdsParams(pydantic.BaseModel):
     page_count: float | None = None
     callback_url: str | None = None
 
+
 class GoogleLensParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.GoogleLens] = Target.GoogleLens
@@ -230,6 +243,7 @@ class GoogleLensParams(pydantic.BaseModel):
     device_type: str | None = None
     markdown: bool | None = None
     callback_url: str | None = None
+
 
 class BingSearchParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
@@ -248,6 +262,7 @@ class BingSearchParams(pydantic.BaseModel):
     xhr: bool | None = None
     callback_url: str | None = None
 
+
 class BingParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.Bing] = Target.Bing
@@ -263,6 +278,7 @@ class BingParams(pydantic.BaseModel):
     xhr: bool | None = None
     callback_url: str | None = None
 
+
 class YoutubeTranscriptParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.YoutubeTranscript] = Target.YoutubeTranscript
@@ -270,6 +286,7 @@ class YoutubeTranscriptParams(pydantic.BaseModel):
     language_code: str | None = None
     transcript_origin: str | None = None
     callback_url: str | None = None
+
 
 class AmazonProductParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
@@ -287,6 +304,7 @@ class AmazonProductParams(pydantic.BaseModel):
     xhr: bool | None = None
     callback_url: str | None = None
 
+
 class AmazonPricingParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.AmazonPricing] = Target.AmazonPricing
@@ -302,6 +320,7 @@ class AmazonPricingParams(pydantic.BaseModel):
     markdown: bool | None = None
     xhr: bool | None = None
     callback_url: str | None = None
+
 
 class AmazonSearchParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
@@ -322,6 +341,7 @@ class AmazonSearchParams(pydantic.BaseModel):
     xhr: bool | None = None
     callback_url: str | None = None
 
+
 class AmazonSellersParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.AmazonSellers] = Target.AmazonSellers
@@ -335,6 +355,7 @@ class AmazonSellersParams(pydantic.BaseModel):
     markdown: bool | None = None
     xhr: bool | None = None
     callback_url: str | None = None
+
 
 class AmazonBestsellersParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
@@ -352,6 +373,7 @@ class AmazonBestsellersParams(pydantic.BaseModel):
     xhr: bool | None = None
     callback_url: str | None = None
 
+
 class AmazonParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.Amazon] = Target.Amazon
@@ -365,6 +387,7 @@ class AmazonParams(pydantic.BaseModel):
     xhr: bool | None = None
     callback_url: str | None = None
 
+
 class EcommerceParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.Ecommerce] = Target.Ecommerce
@@ -376,6 +399,7 @@ class EcommerceParams(pydantic.BaseModel):
     parse: bool | None = None
     parser_type: str | None = None
     callback_url: str | None = None
+
 
 class WalmartProductParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
@@ -390,6 +414,7 @@ class WalmartProductParams(pydantic.BaseModel):
     delivery_zip: str | None = None
     callback_url: str | None = None
 
+
 class WalmartSearchParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.WalmartSearch] = Target.WalmartSearch
@@ -401,6 +426,7 @@ class WalmartSearchParams(pydantic.BaseModel):
     walmart_store_id: str | None = None
     delivery_zip: str | None = None
     callback_url: str | None = None
+
 
 class WalmartParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
@@ -414,6 +440,7 @@ class WalmartParams(pydantic.BaseModel):
     markdown: bool | None = None
     xhr: bool | None = None
     callback_url: str | None = None
+
 
 class TargetProductParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
@@ -429,6 +456,7 @@ class TargetProductParams(pydantic.BaseModel):
     delivery_zip: str | None = None
     callback_url: str | None = None
 
+
 class TargetSearchParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.TargetSearch] = Target.TargetSearch
@@ -443,6 +471,7 @@ class TargetSearchParams(pydantic.BaseModel):
     markdown: bool | None = None
     callback_url: str | None = None
 
+
 class TargetStoreParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.Target] = Target.Target
@@ -453,6 +482,7 @@ class TargetStoreParams(pydantic.BaseModel):
     delivery_zip: str | None = None
     target_store_id: str | None = None
     callback_url: str | None = None
+
 
 class LowesSearchParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
@@ -466,6 +496,7 @@ class LowesSearchParams(pydantic.BaseModel):
     pickup_today: bool | None = None
     delivery_today_tomorrow: bool | None = None
     callback_url: str | None = None
+
 
 class UniversalParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
@@ -488,6 +519,7 @@ class UniversalParams(pydantic.BaseModel):
     markdown: bool | None = None
     callback_url: str | None = None
 
+
 class ChatgptParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.Chatgpt] = Target.Chatgpt
@@ -500,6 +532,7 @@ class ChatgptParams(pydantic.BaseModel):
     xhr: bool | None = None
     callback_url: str | None = None
 
+
 class PerplexityParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.Perplexity] = Target.Perplexity
@@ -511,6 +544,7 @@ class PerplexityParams(pydantic.BaseModel):
     xhr: bool | None = None
     callback_url: str | None = None
 
+
 class GeminiParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.Gemini] = Target.Gemini
@@ -519,6 +553,7 @@ class GeminiParams(pydantic.BaseModel):
     geo: str | None = None
     xhr: bool | None = None
     callback_url: str | None = None
+
 
 class BbbParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
@@ -531,6 +566,7 @@ class BbbParams(pydantic.BaseModel):
     xhr: bool | None = None
     callback_url: str | None = None
 
+
 class AutotraderParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.Autotrader] = Target.Autotrader
@@ -541,6 +577,7 @@ class AutotraderParams(pydantic.BaseModel):
     markdown: bool | None = None
     xhr: bool | None = None
     callback_url: str | None = None
+
 
 class MobileParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
@@ -553,6 +590,7 @@ class MobileParams(pydantic.BaseModel):
     xhr: bool | None = None
     callback_url: str | None = None
 
+
 class AirbnbParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.Airbnb] = Target.Airbnb
@@ -563,6 +601,7 @@ class AirbnbParams(pydantic.BaseModel):
     markdown: bool | None = None
     xhr: bool | None = None
     callback_url: str | None = None
+
 
 class AppleAppStoreParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
@@ -575,11 +614,13 @@ class AppleAppStoreParams(pydantic.BaseModel):
     xhr: bool | None = None
     callback_url: str | None = None
 
+
 class InstagramGraphqlProfileParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.InstagramGraphqlProfile] = Target.InstagramGraphqlProfile
     query: str | None = None
     callback_url: str | None = None
+
 
 class TiktokPostParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
@@ -587,6 +628,7 @@ class TiktokPostParams(pydantic.BaseModel):
     url: str | None = None
     xhr: bool | None = None
     callback_url: str | None = None
+
 
 class TiktokShopSearchParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
@@ -597,6 +639,7 @@ class TiktokShopSearchParams(pydantic.BaseModel):
     markdown: bool | None = None
     country: str | None = None
     callback_url: str | None = None
+
 
 class TiktokShopProductParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
@@ -609,6 +652,7 @@ class TiktokShopProductParams(pydantic.BaseModel):
     country: str | None = None
     callback_url: str | None = None
 
+
 class TiktokParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.Tiktok] = Target.Tiktok
@@ -616,6 +660,7 @@ class TiktokParams(pydantic.BaseModel):
     headless: Literal["html", "png"] | None = None
     user_agent_type: str | None = None
     callback_url: str | None = None
+
 
 class RedditPostParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
@@ -625,6 +670,7 @@ class RedditPostParams(pydantic.BaseModel):
     geo: str | None = None
     callback_url: str | None = None
 
+
 class RedditSubredditParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.RedditSubreddit] = Target.RedditSubreddit
@@ -632,6 +678,7 @@ class RedditSubredditParams(pydantic.BaseModel):
     locale: str | None = None
     geo: str | None = None
     callback_url: str | None = None
+
 
 class RedditUserParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
@@ -642,6 +689,7 @@ class RedditUserParams(pydantic.BaseModel):
     sort: str | None = None
     callback_url: str | None = None
 
+
 class YoutubeVideoParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.YoutubeVideo] = Target.YoutubeVideo
@@ -649,11 +697,13 @@ class YoutubeVideoParams(pydantic.BaseModel):
     geo: str | None = None
     callback_url: str | None = None
 
+
 class YoutubeMetadataParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.YoutubeMetadata] = Target.YoutubeMetadata
     query: str | None = None
     callback_url: str | None = None
+
 
 class YoutubeSearchParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
@@ -675,6 +725,7 @@ class YoutubeSearchParams(pydantic.BaseModel):
     purchased: bool | None = None
     subtitles: bool | None = None
     callback_url: str | None = None
+
 
 class YoutubeSearchMaxParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
@@ -698,6 +749,7 @@ class YoutubeSearchMaxParams(pydantic.BaseModel):
     markdown: bool | None = None
     callback_url: str | None = None
 
+
 class YoutubeSubtitlesParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
     target: Literal[Target.YoutubeSubtitles] = Target.YoutubeSubtitles
@@ -705,6 +757,7 @@ class YoutubeSubtitlesParams(pydantic.BaseModel):
     language_code: str | None = None
     subtitle_origin: str | None = None
     callback_url: str | None = None
+
 
 class YoutubeChannelParams(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(populate_by_name=True)
@@ -715,276 +768,1403 @@ class YoutubeChannelParams(pydantic.BaseModel):
     markdown: bool | None = None
     callback_url: str | None = None
 
-class TargetMeta(pydantic.BaseModel):
-    group: str
-    response_format: str
-    parameters: list[str]
 
-target_meta: dict[str, TargetMeta] = {
-    Target.UniversalEcommerce.value: TargetMeta(
-        group="None",
-        response_format="html",
-        parameters=["callback_url"],
-    ),
-    Target.GoogleSearch.value: TargetMeta(
-        group="Google",
-        response_format="json",
-        parameters=["query", "headless", "locale", "geo", "device_type", "page_from", "google_results_language", "google_tbm", "google_tbs", "parse", "google_nfpr", "google_safe_search", "session_id", "xhr", "markdown", "page_count", "callback_url"],
-    ),
-    Target.GoogleTravelHotels.value: TargetMeta(
-        group="Google",
-        response_format="html",
-        parameters=["query", "headless", "locale", "device_type", "page_from", "date_range", "stars", "adults", "children", "session_id", "markdown", "callback_url"],
-    ),
-    Target.GoogleTrendsExplore.value: TargetMeta(
-        group="Google",
-        response_format="json",
-        parameters=["query", "geo", "device_type", "search_type", "date_start", "date_end", "callback_url"],
-    ),
-    Target.GoogleShoppingSearch.value: TargetMeta(
-        group="Google",
-        response_format="json",
-        parameters=["query", "headless", "locale", "geo", "device_type", "page_from", "google_tbs", "parse", "session_id", "google_results_language", "markdown", "callback_url"],
-    ),
-    Target.GoogleShoppingProduct.value: TargetMeta(
-        group="Google",
-        response_format="json",
-        parameters=["query", "headless", "locale", "geo", "device_type", "page_from", "parse", "session_id", "google_results_language", "markdown", "xhr", "callback_url"],
-    ),
-    Target.Google.value: TargetMeta(
-        group="Google",
-        response_format="json",
-        parameters=["url", "headless", "locale", "device_type", "parse", "session_id", "markdown", "xhr", "page_count", "callback_url"],
-    ),
-    Target.GoogleSuggest.value: TargetMeta(
-        group="Google",
-        response_format="json",
-        parameters=["query", "device_type", "geo", "locale", "session_id", "callback_url"],
-    ),
-    Target.GoogleMaps.value: TargetMeta(
-        group="Google",
-        response_format="html",
-        parameters=["query", "headless", "geo", "locale", "page_from", "device_type", "session_id", "google_results_language", "google_nfpr", "hotel_occupancy", "date_range", "markdown", "callback_url"],
-    ),
-    Target.GoogleAiMode.value: TargetMeta(
-        group="AI Tools",
-        response_format="json",
-        parameters=["query", "geo", "parse", "device_type", "session_id", "markdown", "xhr", "callback_url"],
-    ),
-    Target.GoogleAds.value: TargetMeta(
-        group="Google",
-        response_format="json",
-        parameters=["query", "headless", "locale", "geo", "device_type", "page_from", "google_results_language", "google_tbm", "google_tbs", "parse", "google_nfpr", "session_id", "markdown", "xhr", "page_count", "callback_url"],
-    ),
-    Target.GoogleLens.value: TargetMeta(
-        group="Google",
-        response_format="json",
-        parameters=["query", "headless", "parse", "device_type", "markdown", "callback_url"],
-    ),
-    Target.BingSearch.value: TargetMeta(
-        group="Bing",
-        response_format="json",
-        parameters=["query", "headless", "locale", "geo", "domain", "device_type", "page_from", "parse", "page_count", "session_id", "markdown", "xhr", "callback_url"],
-    ),
-    Target.Bing.value: TargetMeta(
-        group="Bing",
-        response_format="json",
-        parameters=["url", "headless", "locale", "geo", "device_type", "page_from", "parse", "session_id", "markdown", "xhr", "callback_url"],
-    ),
-    Target.YoutubeTranscript.value: TargetMeta(
-        group="YouTube",
-        response_format="json",
-        parameters=["query", "language_code", "transcript_origin", "callback_url"],
-    ),
-    Target.AmazonProduct.value: TargetMeta(
-        group="Amazon",
-        response_format="json",
-        parameters=["query", "headless", "domain", "device_type", "parse", "autoselect_variant", "geo", "session_id", "currency", "markdown", "xhr", "callback_url"],
-    ),
-    Target.AmazonPricing.value: TargetMeta(
-        group="Amazon",
-        response_format="json",
-        parameters=["query", "headless", "domain", "device_type", "page_from", "parse", "geo", "session_id", "currency", "markdown", "xhr", "callback_url"],
-    ),
-    Target.AmazonSearch.value: TargetMeta(
-        group="Amazon",
-        response_format="json",
-        parameters=["query", "headless", "domain", "device_type", "page_from", "category", "merchant", "parse", "geo", "session_id", "sort_by", "currency", "markdown", "xhr", "callback_url"],
-    ),
-    Target.AmazonSellers.value: TargetMeta(
-        group="Amazon",
-        response_format="json",
-        parameters=["query", "headless", "locale", "domain", "device_type", "geo", "parse", "markdown", "xhr", "callback_url"],
-    ),
-    Target.AmazonBestsellers.value: TargetMeta(
-        group="Amazon",
-        response_format="json",
-        parameters=["query", "domain", "device_type", "geo", "page_from", "category", "parse", "session_id", "currency", "markdown", "xhr", "callback_url"],
-    ),
-    Target.Amazon.value: TargetMeta(
-        group="Amazon",
-        response_format="json",
-        parameters=["url", "headless", "device_type", "parse", "geo", "session_id", "markdown", "xhr", "callback_url"],
-    ),
-    Target.Ecommerce.value: TargetMeta(
-        group="Other eCommerce",
-        response_format="json",
-        parameters=["url", "headless", "locale", "geo", "device_type", "parse", "parser_type", "callback_url"],
-    ),
-    Target.WalmartProduct.value: TargetMeta(
-        group="Walmart",
-        response_format="html",
-        parameters=["product_id", "headless", "parse", "xhr", "markdown", "fulfillment_type", "walmart_store_id", "delivery_zip", "callback_url"],
-    ),
-    Target.WalmartSearch.value: TargetMeta(
-        group="Walmart",
-        response_format="json",
-        parameters=["query", "headless", "parse", "markdown", "fulfillment_type", "walmart_store_id", "delivery_zip", "callback_url"],
-    ),
-    Target.Walmart.value: TargetMeta(
-        group="Walmart",
-        response_format="html",
-        parameters=["url", "headless", "locale", "geo", "device_type", "store_id", "markdown", "xhr", "callback_url"],
-    ),
-    Target.TargetProduct.value: TargetMeta(
-        group="Target",
-        response_format="json",
-        parameters=["product_id", "headless", "parse", "device_type", "markdown", "xhr", "delivery_type", "target_store_id", "delivery_zip", "callback_url"],
-    ),
-    Target.TargetSearch.value: TargetMeta(
-        group="Target",
-        response_format="json",
-        parameters=["query", "headless", "parse", "device_type", "delivery_type", "target_store_id", "delivery_zip", "xhr", "markdown", "callback_url"],
-    ),
-    Target.Target.value: TargetMeta(
-        group="Target",
-        response_format="html",
-        parameters=["url", "headless", "device_type", "xhr", "delivery_zip", "target_store_id", "callback_url"],
-    ),
-    Target.LowesSearch.value: TargetMeta(
-        group="Lowe's",
-        response_format="json",
-        parameters=["query", "lowes_store_id", "headless", "delivery_zip", "user_agent_type", "free_delivery", "pickup_today", "delivery_today_tomorrow", "callback_url"],
-    ),
-    Target.Universal.value: TargetMeta(
-        group="Universal",
-        response_format="html",
-        parameters=["url", "payload", "proxy_pool", "http_method", "headless", "geo", "locale", "device_type", "session_id", "successful_status_codes", "headers", "cookies", "force_headers", "force_cookies", "xhr", "markdown", "callback_url"],
-    ),
-    Target.Chatgpt.value: TargetMeta(
-        group="AI Tools",
-        response_format="json",
-        parameters=["prompt", "search", "parse", "geo", "device_type", "markdown", "xhr", "callback_url"],
-    ),
-    Target.Perplexity.value: TargetMeta(
-        group="AI Tools",
-        response_format="json",
-        parameters=["prompt", "parse", "geo", "device_type", "markdown", "xhr", "callback_url"],
-    ),
-    Target.Gemini.value: TargetMeta(
-        group="AI Tools",
-        response_format="json",
-        parameters=["prompt", "parse", "geo", "xhr", "callback_url"],
-    ),
-    Target.Bbb.value: TargetMeta(
-        group="Business Reviews",
-        response_format="html",
-        parameters=["url", "headless", "geo", "device_type", "markdown", "xhr", "callback_url"],
-    ),
-    Target.Autotrader.value: TargetMeta(
-        group="Marketplace",
-        response_format="html",
-        parameters=["url", "headless", "geo", "device_type", "markdown", "xhr", "callback_url"],
-    ),
-    Target.Mobile.value: TargetMeta(
-        group="Marketplace",
-        response_format="html",
-        parameters=["url", "headless", "geo", "device_type", "markdown", "xhr", "callback_url"],
-    ),
-    Target.Airbnb.value: TargetMeta(
-        group="Travel",
-        response_format="html",
-        parameters=["url", "headless", "geo", "device_type", "markdown", "xhr", "callback_url"],
-    ),
-    Target.AppleAppStore.value: TargetMeta(
-        group="Marketplace",
-        response_format="html",
-        parameters=["url", "headless", "geo", "device_type", "markdown", "xhr", "callback_url"],
-    ),
-    Target.InstagramGraphqlProfile.value: TargetMeta(
-        group="Instagram",
-        response_format="json",
-        parameters=["query", "callback_url"],
-    ),
-    Target.TiktokPost.value: TargetMeta(
-        group="TikTok",
-        response_format="html",
-        parameters=["url", "xhr", "callback_url"],
-    ),
-    Target.TiktokShopSearch.value: TargetMeta(
-        group="TikTok",
-        response_format="html",
-        parameters=["query", "headless", "device_type", "markdown", "country", "callback_url"],
-    ),
-    Target.TiktokShopProduct.value: TargetMeta(
-        group="TikTok",
-        response_format="html",
-        parameters=["product_id", "headless", "device_type", "xhr", "markdown", "country", "callback_url"],
-    ),
-    Target.Tiktok.value: TargetMeta(
-        group="TikTok",
-        response_format="html",
-        parameters=["url", "headless", "user_agent_type", "callback_url"],
-    ),
-    Target.RedditPost.value: TargetMeta(
-        group="Reddit",
-        response_format="json",
-        parameters=["url", "locale", "geo", "callback_url"],
-    ),
-    Target.RedditSubreddit.value: TargetMeta(
-        group="Reddit",
-        response_format="json",
-        parameters=["url", "locale", "geo", "callback_url"],
-    ),
-    Target.RedditUser.value: TargetMeta(
-        group="Reddit",
-        response_format="json",
-        parameters=["url", "locale", "geo", "sort", "callback_url"],
-    ),
-    Target.YoutubeVideo.value: TargetMeta(
-        group="None",
-        response_format="json",
-        parameters=["query", "geo", "callback_url"],
-    ),
-    Target.YoutubeMetadata.value: TargetMeta(
-        group="YouTube",
-        response_format="json",
-        parameters=["query", "callback_url"],
-    ),
-    Target.YoutubeSearch.value: TargetMeta(
-        group="YouTube",
-        response_format="json",
-        parameters=["360", "query", "upload_date", "type", "duration", "video_sort_by", "3d", "4k", "creative_commons", "hd", "hdr", "vr180", "live", "location", "purchased", "subtitles", "callback_url"],
-    ),
-    Target.YoutubeSearchMax.value: TargetMeta(
-        group="YouTube",
-        response_format="json",
-        parameters=["360", "query", "upload_date", "type", "duration", "video_sort_by", "3d", "4k", "creative_commons", "hd", "hdr", "vr180", "live", "location", "purchased", "subtitles", "markdown", "callback_url"],
-    ),
-    Target.YoutubeSubtitles.value: TargetMeta(
-        group="YouTube",
-        response_format="json",
-        parameters=["query", "language_code", "subtitle_origin", "callback_url"],
-    ),
-    Target.YoutubeChannel.value: TargetMeta(
-        group="YouTube",
-        response_format="json",
-        parameters=["query", "parse", "limit", "markdown", "callback_url"],
-    ),
+class UniversalEcommerceBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.UniversalEcommerce] = Target.UniversalEcommerce
+    callback_url: str | None = None
+
+
+class GoogleSearchBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.GoogleSearch] = Target.GoogleSearch
+    query: list[str] | None = None
+    headless: Literal["html", "png"] | None = None
+    locale: str | None = None
+    geo: str | None = None
+    device_type: str | None = None
+    page_from: float | None = None
+    google_results_language: str | None = None
+    google_tbm: str | None = None
+    google_tbs: str | None = None
+    parse: bool | None = None
+    google_nfpr: bool | None = None
+    google_safe_search: bool | None = None
+    session_id: str | None = None
+    xhr: bool | None = None
+    markdown: bool | None = None
+    page_count: float | None = None
+    callback_url: str | None = None
+
+
+class GoogleTravelHotelsBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.GoogleTravelHotels] = Target.GoogleTravelHotels
+    query: list[str] | None = None
+    headless: Literal["html", "png"] | None = None
+    locale: str | None = None
+    device_type: str | None = None
+    page_from: float | None = None
+    date_range: str | None = None
+    stars: float | None = None
+    adults: float | None = None
+    children: float | None = None
+    session_id: str | None = None
+    markdown: bool | None = None
+    callback_url: str | None = None
+
+
+class GoogleTrendsExploreBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.GoogleTrendsExplore] = Target.GoogleTrendsExplore
+    query: list[str] | None = None
+    geo: str | None = None
+    device_type: str | None = None
+    search_type: str | None = None
+    date_start: str | None = None
+    date_end: str | None = None
+    callback_url: str | None = None
+
+
+class GoogleShoppingSearchBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.GoogleShoppingSearch] = Target.GoogleShoppingSearch
+    query: list[str] | None = None
+    headless: Literal["html", "png"] | None = None
+    locale: str | None = None
+    geo: str | None = None
+    device_type: str | None = None
+    page_from: float | None = None
+    google_tbs: str | None = None
+    parse: bool | None = None
+    session_id: str | None = None
+    google_results_language: str | None = None
+    markdown: bool | None = None
+    callback_url: str | None = None
+
+
+class GoogleShoppingProductBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.GoogleShoppingProduct] = Target.GoogleShoppingProduct
+    query: list[str] | None = None
+    headless: Literal["html", "png"] | None = None
+    locale: str | None = None
+    geo: str | None = None
+    device_type: str | None = None
+    page_from: float | None = None
+    parse: bool | None = None
+    session_id: str | None = None
+    google_results_language: str | None = None
+    markdown: bool | None = None
+    xhr: bool | None = None
+    callback_url: str | None = None
+
+
+class GoogleBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.Google] = Target.Google
+    url: list[str] | None = None
+    headless: Literal["html", "png"] | None = None
+    locale: str | None = None
+    device_type: str | None = None
+    parse: bool | None = None
+    session_id: str | None = None
+    markdown: bool | None = None
+    xhr: bool | None = None
+    page_count: float | None = None
+    callback_url: str | None = None
+
+
+class GoogleSuggestBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.GoogleSuggest] = Target.GoogleSuggest
+    query: list[str] | None = None
+    device_type: str | None = None
+    geo: str | None = None
+    locale: str | None = None
+    session_id: str | None = None
+    callback_url: str | None = None
+
+
+class GoogleMapsBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.GoogleMaps] = Target.GoogleMaps
+    query: list[str] | None = None
+    headless: Literal["html", "png"] | None = None
+    geo: str | None = None
+    locale: str | None = None
+    page_from: float | None = None
+    device_type: str | None = None
+    session_id: str | None = None
+    google_results_language: str | None = None
+    google_nfpr: bool | None = None
+    hotel_occupancy: str | None = None
+    date_range: str | None = None
+    markdown: bool | None = None
+    callback_url: str | None = None
+
+
+class GoogleAiModeBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.GoogleAiMode] = Target.GoogleAiMode
+    query: list[str] | None = None
+    geo: str | None = None
+    parse: bool | None = None
+    device_type: str | None = None
+    session_id: str | None = None
+    markdown: bool | None = None
+    xhr: bool | None = None
+    callback_url: str | None = None
+
+
+class GoogleAdsBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.GoogleAds] = Target.GoogleAds
+    query: list[str] | None = None
+    headless: Literal["html", "png"] | None = None
+    locale: str | None = None
+    geo: str | None = None
+    device_type: str | None = None
+    page_from: float | None = None
+    google_results_language: str | None = None
+    google_tbm: str | None = None
+    google_tbs: str | None = None
+    parse: bool | None = None
+    google_nfpr: bool | None = None
+    session_id: str | None = None
+    markdown: bool | None = None
+    xhr: bool | None = None
+    page_count: float | None = None
+    callback_url: str | None = None
+
+
+class GoogleLensBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.GoogleLens] = Target.GoogleLens
+    query: list[str] | None = None
+    headless: Literal["html", "png"] | None = None
+    parse: bool | None = None
+    device_type: str | None = None
+    markdown: bool | None = None
+    callback_url: str | None = None
+
+
+class BingSearchBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.BingSearch] = Target.BingSearch
+    query: list[str] | None = None
+    headless: Literal["html", "png"] | None = None
+    locale: str | None = None
+    geo: str | None = None
+    domain: str | None = None
+    device_type: str | None = None
+    page_from: float | None = None
+    parse: bool | None = None
+    page_count: float | None = None
+    session_id: str | None = None
+    markdown: bool | None = None
+    xhr: bool | None = None
+    callback_url: str | None = None
+
+
+class BingBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.Bing] = Target.Bing
+    url: list[str] | None = None
+    headless: Literal["html", "png"] | None = None
+    locale: str | None = None
+    geo: str | None = None
+    device_type: str | None = None
+    page_from: float | None = None
+    parse: bool | None = None
+    session_id: str | None = None
+    markdown: bool | None = None
+    xhr: bool | None = None
+    callback_url: str | None = None
+
+
+class YoutubeTranscriptBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.YoutubeTranscript] = Target.YoutubeTranscript
+    query: list[str] | None = None
+    language_code: str | None = None
+    transcript_origin: str | None = None
+    callback_url: str | None = None
+
+
+class AmazonProductBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.AmazonProduct] = Target.AmazonProduct
+    query: list[str] | None = None
+    headless: Literal["html", "png"] | None = None
+    domain: str | None = None
+    device_type: str | None = None
+    parse: bool | None = None
+    autoselect_variant: bool | None = None
+    geo: str | None = None
+    session_id: str | None = None
+    currency: str | None = None
+    markdown: bool | None = None
+    xhr: bool | None = None
+    callback_url: str | None = None
+
+
+class AmazonPricingBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.AmazonPricing] = Target.AmazonPricing
+    query: list[str] | None = None
+    headless: Literal["html", "png"] | None = None
+    domain: str | None = None
+    device_type: str | None = None
+    page_from: float | None = None
+    parse: bool | None = None
+    geo: str | None = None
+    session_id: str | None = None
+    currency: str | None = None
+    markdown: bool | None = None
+    xhr: bool | None = None
+    callback_url: str | None = None
+
+
+class AmazonSearchBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.AmazonSearch] = Target.AmazonSearch
+    query: list[str] | None = None
+    headless: Literal["html", "png"] | None = None
+    domain: str | None = None
+    device_type: str | None = None
+    page_from: float | None = None
+    category: str | None = None
+    merchant: str | None = None
+    parse: bool | None = None
+    geo: str | None = None
+    session_id: str | None = None
+    sort_by: str | None = None
+    currency: str | None = None
+    markdown: bool | None = None
+    xhr: bool | None = None
+    callback_url: str | None = None
+
+
+class AmazonSellersBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.AmazonSellers] = Target.AmazonSellers
+    query: list[str] | None = None
+    headless: Literal["html", "png"] | None = None
+    locale: str | None = None
+    domain: str | None = None
+    device_type: str | None = None
+    geo: str | None = None
+    parse: bool | None = None
+    markdown: bool | None = None
+    xhr: bool | None = None
+    callback_url: str | None = None
+
+
+class AmazonBestsellersBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.AmazonBestsellers] = Target.AmazonBestsellers
+    query: list[str] | None = None
+    domain: str | None = None
+    device_type: str | None = None
+    geo: str | None = None
+    page_from: float | None = None
+    category: str | None = None
+    parse: bool | None = None
+    session_id: str | None = None
+    currency: str | None = None
+    markdown: bool | None = None
+    xhr: bool | None = None
+    callback_url: str | None = None
+
+
+class AmazonBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.Amazon] = Target.Amazon
+    url: list[str] | None = None
+    headless: Literal["html", "png"] | None = None
+    device_type: str | None = None
+    parse: bool | None = None
+    geo: str | None = None
+    session_id: str | None = None
+    markdown: bool | None = None
+    xhr: bool | None = None
+    callback_url: str | None = None
+
+
+class EcommerceBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.Ecommerce] = Target.Ecommerce
+    url: list[str] | None = None
+    headless: Literal["html", "png"] | None = None
+    locale: str | None = None
+    geo: str | None = None
+    device_type: str | None = None
+    parse: bool | None = None
+    parser_type: str | None = None
+    callback_url: str | None = None
+
+
+class WalmartProductBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.WalmartProduct] = Target.WalmartProduct
+    product_id: str | None = None
+    headless: Literal["html", "png"] | None = None
+    parse: bool | None = None
+    xhr: bool | None = None
+    markdown: bool | None = None
+    fulfillment_type: str | None = None
+    walmart_store_id: str | None = None
+    delivery_zip: str | None = None
+    callback_url: str | None = None
+
+
+class WalmartSearchBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.WalmartSearch] = Target.WalmartSearch
+    query: list[str] | None = None
+    headless: Literal["html", "png"] | None = None
+    parse: bool | None = None
+    markdown: bool | None = None
+    fulfillment_type: str | None = None
+    walmart_store_id: str | None = None
+    delivery_zip: str | None = None
+    callback_url: str | None = None
+
+
+class WalmartBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.Walmart] = Target.Walmart
+    url: list[str] | None = None
+    headless: Literal["html", "png"] | None = None
+    locale: str | None = None
+    geo: str | None = None
+    device_type: str | None = None
+    store_id: str | None = None
+    markdown: bool | None = None
+    xhr: bool | None = None
+    callback_url: str | None = None
+
+
+class TargetProductBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.TargetProduct] = Target.TargetProduct
+    product_id: str | None = None
+    headless: Literal["html", "png"] | None = None
+    parse: bool | None = None
+    device_type: str | None = None
+    markdown: bool | None = None
+    xhr: bool | None = None
+    delivery_type: str | None = None
+    target_store_id: str | None = None
+    delivery_zip: str | None = None
+    callback_url: str | None = None
+
+
+class TargetSearchBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.TargetSearch] = Target.TargetSearch
+    query: list[str] | None = None
+    headless: Literal["html", "png"] | None = None
+    parse: bool | None = None
+    device_type: str | None = None
+    delivery_type: str | None = None
+    target_store_id: str | None = None
+    delivery_zip: str | None = None
+    xhr: bool | None = None
+    markdown: bool | None = None
+    callback_url: str | None = None
+
+
+class TargetStoreBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.Target] = Target.Target
+    url: list[str] | None = None
+    headless: Literal["html", "png"] | None = None
+    device_type: str | None = None
+    xhr: bool | None = None
+    delivery_zip: str | None = None
+    target_store_id: str | None = None
+    callback_url: str | None = None
+
+
+class LowesSearchBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.LowesSearch] = Target.LowesSearch
+    query: list[str] | None = None
+    lowes_store_id: str | None = None
+    headless: Literal["html", "png"] | None = None
+    delivery_zip: str | None = None
+    user_agent_type: str | None = None
+    free_delivery: bool | None = None
+    pickup_today: bool | None = None
+    delivery_today_tomorrow: bool | None = None
+    callback_url: str | None = None
+
+
+class UniversalBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.Universal] = Target.Universal
+    url: list[str] | None = None
+    payload: str | None = None
+    proxy_pool: Literal["standard", "premium"] | None = None
+    http_method: str | None = None
+    headless: Literal["html", "png"] | None = None
+    geo: str | None = None
+    locale: str | None = None
+    device_type: str | None = None
+    session_id: str | None = None
+    successful_status_codes: list[Any] | None = None
+    headers: Any | None = None
+    cookies: Any | None = None
+    force_headers: bool | None = None
+    force_cookies: bool | None = None
+    xhr: bool | None = None
+    markdown: bool | None = None
+    callback_url: str | None = None
+
+
+class ChatgptBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.Chatgpt] = Target.Chatgpt
+    prompt: str | None = None
+    search: bool | None = None
+    parse: bool | None = None
+    geo: str | None = None
+    device_type: str | None = None
+    markdown: bool | None = None
+    xhr: bool | None = None
+    callback_url: str | None = None
+
+
+class PerplexityBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.Perplexity] = Target.Perplexity
+    prompt: str | None = None
+    parse: bool | None = None
+    geo: str | None = None
+    device_type: str | None = None
+    markdown: bool | None = None
+    xhr: bool | None = None
+    callback_url: str | None = None
+
+
+class GeminiBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.Gemini] = Target.Gemini
+    prompt: str | None = None
+    parse: bool | None = None
+    geo: str | None = None
+    xhr: bool | None = None
+    callback_url: str | None = None
+
+
+class BbbBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.Bbb] = Target.Bbb
+    url: list[str] | None = None
+    headless: Literal["html", "png"] | None = None
+    geo: str | None = None
+    device_type: str | None = None
+    markdown: bool | None = None
+    xhr: bool | None = None
+    callback_url: str | None = None
+
+
+class AutotraderBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.Autotrader] = Target.Autotrader
+    url: list[str] | None = None
+    headless: Literal["html", "png"] | None = None
+    geo: str | None = None
+    device_type: str | None = None
+    markdown: bool | None = None
+    xhr: bool | None = None
+    callback_url: str | None = None
+
+
+class MobileBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.Mobile] = Target.Mobile
+    url: list[str] | None = None
+    headless: Literal["html", "png"] | None = None
+    geo: str | None = None
+    device_type: str | None = None
+    markdown: bool | None = None
+    xhr: bool | None = None
+    callback_url: str | None = None
+
+
+class AirbnbBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.Airbnb] = Target.Airbnb
+    url: list[str] | None = None
+    headless: Literal["html", "png"] | None = None
+    geo: str | None = None
+    device_type: str | None = None
+    markdown: bool | None = None
+    xhr: bool | None = None
+    callback_url: str | None = None
+
+
+class AppleAppStoreBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.AppleAppStore] = Target.AppleAppStore
+    url: list[str] | None = None
+    headless: Literal["html", "png"] | None = None
+    geo: str | None = None
+    device_type: str | None = None
+    markdown: bool | None = None
+    xhr: bool | None = None
+    callback_url: str | None = None
+
+
+class InstagramGraphqlProfileBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.InstagramGraphqlProfile] = Target.InstagramGraphqlProfile
+    query: list[str] | None = None
+    callback_url: str | None = None
+
+
+class TiktokPostBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.TiktokPost] = Target.TiktokPost
+    url: list[str] | None = None
+    xhr: bool | None = None
+    callback_url: str | None = None
+
+
+class TiktokShopSearchBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.TiktokShopSearch] = Target.TiktokShopSearch
+    query: list[str] | None = None
+    headless: Literal["html", "png"] | None = None
+    device_type: str | None = None
+    markdown: bool | None = None
+    country: str | None = None
+    callback_url: str | None = None
+
+
+class TiktokShopProductBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.TiktokShopProduct] = Target.TiktokShopProduct
+    product_id: str | None = None
+    headless: Literal["html", "png"] | None = None
+    device_type: str | None = None
+    xhr: bool | None = None
+    markdown: bool | None = None
+    country: str | None = None
+    callback_url: str | None = None
+
+
+class TiktokBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.Tiktok] = Target.Tiktok
+    url: list[str] | None = None
+    headless: Literal["html", "png"] | None = None
+    user_agent_type: str | None = None
+    callback_url: str | None = None
+
+
+class RedditPostBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.RedditPost] = Target.RedditPost
+    url: list[str] | None = None
+    locale: str | None = None
+    geo: str | None = None
+    callback_url: str | None = None
+
+
+class RedditSubredditBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.RedditSubreddit] = Target.RedditSubreddit
+    url: list[str] | None = None
+    locale: str | None = None
+    geo: str | None = None
+    callback_url: str | None = None
+
+
+class RedditUserBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.RedditUser] = Target.RedditUser
+    url: list[str] | None = None
+    locale: str | None = None
+    geo: str | None = None
+    sort: str | None = None
+    callback_url: str | None = None
+
+
+class YoutubeVideoBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.YoutubeVideo] = Target.YoutubeVideo
+    query: list[str] | None = None
+    geo: str | None = None
+    callback_url: str | None = None
+
+
+class YoutubeMetadataBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.YoutubeMetadata] = Target.YoutubeMetadata
+    query: list[str] | None = None
+    callback_url: str | None = None
+
+
+class YoutubeSearchBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.YoutubeSearch] = Target.YoutubeSearch
+    f360: bool | None = pydantic.Field(None, alias="360")
+    query: list[str] | None = None
+    upload_date: str | None = None
+    type: str | None = None
+    duration: str | None = None
+    video_sort_by: str | None = None
+    f3d: bool | None = pydantic.Field(None, alias="3d")
+    f4k: bool | None = pydantic.Field(None, alias="4k")
+    creative_commons: bool | None = None
+    hd: bool | None = None
+    hdr: bool | None = None
+    vr180: bool | None = None
+    live: bool | None = None
+    location: bool | None = None
+    purchased: bool | None = None
+    subtitles: bool | None = None
+    callback_url: str | None = None
+
+
+class YoutubeSearchMaxBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.YoutubeSearchMax] = Target.YoutubeSearchMax
+    f360: bool | None = pydantic.Field(None, alias="360")
+    query: list[str] | None = None
+    upload_date: str | None = None
+    type: str | None = None
+    duration: str | None = None
+    video_sort_by: str | None = None
+    f3d: bool | None = pydantic.Field(None, alias="3d")
+    f4k: bool | None = pydantic.Field(None, alias="4k")
+    creative_commons: bool | None = None
+    hd: bool | None = None
+    hdr: bool | None = None
+    vr180: bool | None = None
+    live: bool | None = None
+    location: bool | None = None
+    purchased: bool | None = None
+    subtitles: bool | None = None
+    markdown: bool | None = None
+    callback_url: str | None = None
+
+
+class YoutubeSubtitlesBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.YoutubeSubtitles] = Target.YoutubeSubtitles
+    query: list[str] | None = None
+    language_code: str | None = None
+    subtitle_origin: str | None = None
+    callback_url: str | None = None
+
+
+class YoutubeChannelBatchParams(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(populate_by_name=True)
+    target: Literal[Target.YoutubeChannel] = Target.YoutubeChannel
+    query: list[str] | None = None
+    parse: bool | None = None
+    limit: float | None = None
+    markdown: bool | None = None
+    callback_url: str | None = None
+
+
+target_meta: dict[str, dict[str, Any]] = {
+    Target.UniversalEcommerce.value: {
+        "group": "None",
+        "response_format": "html",
+        "parameters": ["callback_url"],
+    },
+    Target.GoogleSearch.value: {
+        "group": "Google",
+        "response_format": "json",
+        "parameters": [
+            "query",
+            "headless",
+            "locale",
+            "geo",
+            "device_type",
+            "page_from",
+            "google_results_language",
+            "google_tbm",
+            "google_tbs",
+            "parse",
+            "google_nfpr",
+            "google_safe_search",
+            "session_id",
+            "xhr",
+            "markdown",
+            "page_count",
+            "callback_url",
+        ],
+    },
+    Target.GoogleTravelHotels.value: {
+        "group": "Google",
+        "response_format": "html",
+        "parameters": [
+            "query",
+            "headless",
+            "locale",
+            "device_type",
+            "page_from",
+            "date_range",
+            "stars",
+            "adults",
+            "children",
+            "session_id",
+            "markdown",
+            "callback_url",
+        ],
+    },
+    Target.GoogleTrendsExplore.value: {
+        "group": "Google",
+        "response_format": "json",
+        "parameters": ["query", "geo", "device_type", "search_type", "date_start", "date_end", "callback_url"],
+    },
+    Target.GoogleShoppingSearch.value: {
+        "group": "Google",
+        "response_format": "json",
+        "parameters": [
+            "query",
+            "headless",
+            "locale",
+            "geo",
+            "device_type",
+            "page_from",
+            "google_tbs",
+            "parse",
+            "session_id",
+            "google_results_language",
+            "markdown",
+            "callback_url",
+        ],
+    },
+    Target.GoogleShoppingProduct.value: {
+        "group": "Google",
+        "response_format": "json",
+        "parameters": [
+            "query",
+            "headless",
+            "locale",
+            "geo",
+            "device_type",
+            "page_from",
+            "parse",
+            "session_id",
+            "google_results_language",
+            "markdown",
+            "xhr",
+            "callback_url",
+        ],
+    },
+    Target.Google.value: {
+        "group": "Google",
+        "response_format": "json",
+        "parameters": [
+            "url",
+            "headless",
+            "locale",
+            "device_type",
+            "parse",
+            "session_id",
+            "markdown",
+            "xhr",
+            "page_count",
+            "callback_url",
+        ],
+    },
+    Target.GoogleSuggest.value: {
+        "group": "Google",
+        "response_format": "json",
+        "parameters": ["query", "device_type", "geo", "locale", "session_id", "callback_url"],
+    },
+    Target.GoogleMaps.value: {
+        "group": "Google",
+        "response_format": "html",
+        "parameters": [
+            "query",
+            "headless",
+            "geo",
+            "locale",
+            "page_from",
+            "device_type",
+            "session_id",
+            "google_results_language",
+            "google_nfpr",
+            "hotel_occupancy",
+            "date_range",
+            "markdown",
+            "callback_url",
+        ],
+    },
+    Target.GoogleAiMode.value: {
+        "group": "AI Tools",
+        "response_format": "json",
+        "parameters": ["query", "geo", "parse", "device_type", "session_id", "markdown", "xhr", "callback_url"],
+    },
+    Target.GoogleAds.value: {
+        "group": "Google",
+        "response_format": "json",
+        "parameters": [
+            "query",
+            "headless",
+            "locale",
+            "geo",
+            "device_type",
+            "page_from",
+            "google_results_language",
+            "google_tbm",
+            "google_tbs",
+            "parse",
+            "google_nfpr",
+            "session_id",
+            "markdown",
+            "xhr",
+            "page_count",
+            "callback_url",
+        ],
+    },
+    Target.GoogleLens.value: {
+        "group": "Google",
+        "response_format": "json",
+        "parameters": ["query", "headless", "parse", "device_type", "markdown", "callback_url"],
+    },
+    Target.BingSearch.value: {
+        "group": "Bing",
+        "response_format": "json",
+        "parameters": [
+            "query",
+            "headless",
+            "locale",
+            "geo",
+            "domain",
+            "device_type",
+            "page_from",
+            "parse",
+            "page_count",
+            "session_id",
+            "markdown",
+            "xhr",
+            "callback_url",
+        ],
+    },
+    Target.Bing.value: {
+        "group": "Bing",
+        "response_format": "json",
+        "parameters": [
+            "url",
+            "headless",
+            "locale",
+            "geo",
+            "device_type",
+            "page_from",
+            "parse",
+            "session_id",
+            "markdown",
+            "xhr",
+            "callback_url",
+        ],
+    },
+    Target.YoutubeTranscript.value: {
+        "group": "YouTube",
+        "response_format": "json",
+        "parameters": ["query", "language_code", "transcript_origin", "callback_url"],
+    },
+    Target.AmazonProduct.value: {
+        "group": "Amazon",
+        "response_format": "json",
+        "parameters": [
+            "query",
+            "headless",
+            "domain",
+            "device_type",
+            "parse",
+            "autoselect_variant",
+            "geo",
+            "session_id",
+            "currency",
+            "markdown",
+            "xhr",
+            "callback_url",
+        ],
+    },
+    Target.AmazonPricing.value: {
+        "group": "Amazon",
+        "response_format": "json",
+        "parameters": [
+            "query",
+            "headless",
+            "domain",
+            "device_type",
+            "page_from",
+            "parse",
+            "geo",
+            "session_id",
+            "currency",
+            "markdown",
+            "xhr",
+            "callback_url",
+        ],
+    },
+    Target.AmazonSearch.value: {
+        "group": "Amazon",
+        "response_format": "json",
+        "parameters": [
+            "query",
+            "headless",
+            "domain",
+            "device_type",
+            "page_from",
+            "category",
+            "merchant",
+            "parse",
+            "geo",
+            "session_id",
+            "sort_by",
+            "currency",
+            "markdown",
+            "xhr",
+            "callback_url",
+        ],
+    },
+    Target.AmazonSellers.value: {
+        "group": "Amazon",
+        "response_format": "json",
+        "parameters": [
+            "query",
+            "headless",
+            "locale",
+            "domain",
+            "device_type",
+            "geo",
+            "parse",
+            "markdown",
+            "xhr",
+            "callback_url",
+        ],
+    },
+    Target.AmazonBestsellers.value: {
+        "group": "Amazon",
+        "response_format": "json",
+        "parameters": [
+            "query",
+            "domain",
+            "device_type",
+            "geo",
+            "page_from",
+            "category",
+            "parse",
+            "session_id",
+            "currency",
+            "markdown",
+            "xhr",
+            "callback_url",
+        ],
+    },
+    Target.Amazon.value: {
+        "group": "Amazon",
+        "response_format": "json",
+        "parameters": [
+            "url",
+            "headless",
+            "device_type",
+            "parse",
+            "geo",
+            "session_id",
+            "markdown",
+            "xhr",
+            "callback_url",
+        ],
+    },
+    Target.Ecommerce.value: {
+        "group": "Other eCommerce",
+        "response_format": "json",
+        "parameters": ["url", "headless", "locale", "geo", "device_type", "parse", "parser_type", "callback_url"],
+    },
+    Target.WalmartProduct.value: {
+        "group": "Walmart",
+        "response_format": "html",
+        "parameters": [
+            "product_id",
+            "headless",
+            "parse",
+            "xhr",
+            "markdown",
+            "fulfillment_type",
+            "walmart_store_id",
+            "delivery_zip",
+            "callback_url",
+        ],
+    },
+    Target.WalmartSearch.value: {
+        "group": "Walmart",
+        "response_format": "json",
+        "parameters": [
+            "query",
+            "headless",
+            "parse",
+            "markdown",
+            "fulfillment_type",
+            "walmart_store_id",
+            "delivery_zip",
+            "callback_url",
+        ],
+    },
+    Target.Walmart.value: {
+        "group": "Walmart",
+        "response_format": "html",
+        "parameters": [
+            "url",
+            "headless",
+            "locale",
+            "geo",
+            "device_type",
+            "store_id",
+            "markdown",
+            "xhr",
+            "callback_url",
+        ],
+    },
+    Target.TargetProduct.value: {
+        "group": "Target",
+        "response_format": "json",
+        "parameters": [
+            "product_id",
+            "headless",
+            "parse",
+            "device_type",
+            "markdown",
+            "xhr",
+            "delivery_type",
+            "target_store_id",
+            "delivery_zip",
+            "callback_url",
+        ],
+    },
+    Target.TargetSearch.value: {
+        "group": "Target",
+        "response_format": "json",
+        "parameters": [
+            "query",
+            "headless",
+            "parse",
+            "device_type",
+            "delivery_type",
+            "target_store_id",
+            "delivery_zip",
+            "xhr",
+            "markdown",
+            "callback_url",
+        ],
+    },
+    Target.Target.value: {
+        "group": "Target",
+        "response_format": "html",
+        "parameters": ["url", "headless", "device_type", "xhr", "delivery_zip", "target_store_id", "callback_url"],
+    },
+    Target.LowesSearch.value: {
+        "group": "Lowe's",
+        "response_format": "json",
+        "parameters": [
+            "query",
+            "lowes_store_id",
+            "headless",
+            "delivery_zip",
+            "user_agent_type",
+            "free_delivery",
+            "pickup_today",
+            "delivery_today_tomorrow",
+            "callback_url",
+        ],
+    },
+    Target.Universal.value: {
+        "group": "Universal",
+        "response_format": "html",
+        "parameters": [
+            "url",
+            "payload",
+            "proxy_pool",
+            "http_method",
+            "headless",
+            "geo",
+            "locale",
+            "device_type",
+            "session_id",
+            "successful_status_codes",
+            "headers",
+            "cookies",
+            "force_headers",
+            "force_cookies",
+            "xhr",
+            "markdown",
+            "callback_url",
+        ],
+    },
+    Target.Chatgpt.value: {
+        "group": "AI Tools",
+        "response_format": "json",
+        "parameters": ["prompt", "search", "parse", "geo", "device_type", "markdown", "xhr", "callback_url"],
+    },
+    Target.Perplexity.value: {
+        "group": "AI Tools",
+        "response_format": "json",
+        "parameters": ["prompt", "parse", "geo", "device_type", "markdown", "xhr", "callback_url"],
+    },
+    Target.Gemini.value: {
+        "group": "AI Tools",
+        "response_format": "json",
+        "parameters": ["prompt", "parse", "geo", "xhr", "callback_url"],
+    },
+    Target.Bbb.value: {
+        "group": "Business Reviews",
+        "response_format": "html",
+        "parameters": ["url", "headless", "geo", "device_type", "markdown", "xhr", "callback_url"],
+    },
+    Target.Autotrader.value: {
+        "group": "Marketplace",
+        "response_format": "html",
+        "parameters": ["url", "headless", "geo", "device_type", "markdown", "xhr", "callback_url"],
+    },
+    Target.Mobile.value: {
+        "group": "Marketplace",
+        "response_format": "html",
+        "parameters": ["url", "headless", "geo", "device_type", "markdown", "xhr", "callback_url"],
+    },
+    Target.Airbnb.value: {
+        "group": "Travel",
+        "response_format": "html",
+        "parameters": ["url", "headless", "geo", "device_type", "markdown", "xhr", "callback_url"],
+    },
+    Target.AppleAppStore.value: {
+        "group": "Marketplace",
+        "response_format": "html",
+        "parameters": ["url", "headless", "geo", "device_type", "markdown", "xhr", "callback_url"],
+    },
+    Target.InstagramGraphqlProfile.value: {
+        "group": "Instagram",
+        "response_format": "json",
+        "parameters": ["query", "callback_url"],
+    },
+    Target.TiktokPost.value: {
+        "group": "TikTok",
+        "response_format": "html",
+        "parameters": ["url", "xhr", "callback_url"],
+    },
+    Target.TiktokShopSearch.value: {
+        "group": "TikTok",
+        "response_format": "html",
+        "parameters": ["query", "headless", "device_type", "markdown", "country", "callback_url"],
+    },
+    Target.TiktokShopProduct.value: {
+        "group": "TikTok",
+        "response_format": "html",
+        "parameters": ["product_id", "headless", "device_type", "xhr", "markdown", "country", "callback_url"],
+    },
+    Target.Tiktok.value: {
+        "group": "TikTok",
+        "response_format": "html",
+        "parameters": ["url", "headless", "user_agent_type", "callback_url"],
+    },
+    Target.RedditPost.value: {
+        "group": "Reddit",
+        "response_format": "json",
+        "parameters": ["url", "locale", "geo", "callback_url"],
+    },
+    Target.RedditSubreddit.value: {
+        "group": "Reddit",
+        "response_format": "json",
+        "parameters": ["url", "locale", "geo", "callback_url"],
+    },
+    Target.RedditUser.value: {
+        "group": "Reddit",
+        "response_format": "json",
+        "parameters": ["url", "locale", "geo", "sort", "callback_url"],
+    },
+    Target.YoutubeVideo.value: {
+        "group": "None",
+        "response_format": "json",
+        "parameters": ["query", "geo", "callback_url"],
+    },
+    Target.YoutubeMetadata.value: {
+        "group": "YouTube",
+        "response_format": "json",
+        "parameters": ["query", "callback_url"],
+    },
+    Target.YoutubeSearch.value: {
+        "group": "YouTube",
+        "response_format": "json",
+        "parameters": [
+            "360",
+            "query",
+            "upload_date",
+            "type",
+            "duration",
+            "video_sort_by",
+            "3d",
+            "4k",
+            "creative_commons",
+            "hd",
+            "hdr",
+            "vr180",
+            "live",
+            "location",
+            "purchased",
+            "subtitles",
+            "callback_url",
+        ],
+    },
+    Target.YoutubeSearchMax.value: {
+        "group": "YouTube",
+        "response_format": "json",
+        "parameters": [
+            "360",
+            "query",
+            "upload_date",
+            "type",
+            "duration",
+            "video_sort_by",
+            "3d",
+            "4k",
+            "creative_commons",
+            "hd",
+            "hdr",
+            "vr180",
+            "live",
+            "location",
+            "purchased",
+            "subtitles",
+            "markdown",
+            "callback_url",
+        ],
+    },
+    Target.YoutubeSubtitles.value: {
+        "group": "YouTube",
+        "response_format": "json",
+        "parameters": ["query", "language_code", "subtitle_origin", "callback_url"],
+    },
+    Target.YoutubeChannel.value: {
+        "group": "YouTube",
+        "response_format": "json",
+        "parameters": ["query", "parse", "limit", "markdown", "callback_url"],
+    },
 }
 
 ScrapeRequest = Annotated[
-    UniversalEcommerceParams | GoogleSearchParams | GoogleTravelHotelsParams | GoogleTrendsExploreParams | GoogleShoppingSearchParams | GoogleShoppingProductParams | GoogleParams | GoogleSuggestParams | GoogleMapsParams | GoogleAiModeParams | GoogleAdsParams | GoogleLensParams | BingSearchParams | BingParams | YoutubeTranscriptParams | AmazonProductParams | AmazonPricingParams | AmazonSearchParams | AmazonSellersParams | AmazonBestsellersParams | AmazonParams | EcommerceParams | WalmartProductParams | WalmartSearchParams | WalmartParams | TargetProductParams | TargetSearchParams | TargetStoreParams | LowesSearchParams | UniversalParams | ChatgptParams | PerplexityParams | GeminiParams | BbbParams | AutotraderParams | MobileParams | AirbnbParams | AppleAppStoreParams | InstagramGraphqlProfileParams | TiktokPostParams | TiktokShopSearchParams | TiktokShopProductParams | TiktokParams | RedditPostParams | RedditSubredditParams | RedditUserParams | YoutubeVideoParams | YoutubeMetadataParams | YoutubeSearchParams | YoutubeSearchMaxParams | YoutubeSubtitlesParams | YoutubeChannelParams,
-    pydantic.Field(discriminator='target'),
+    Union[
+        UniversalEcommerceParams
+        | GoogleSearchParams
+        | GoogleTravelHotelsParams
+        | GoogleTrendsExploreParams
+        | GoogleShoppingSearchParams
+        | GoogleShoppingProductParams
+        | GoogleParams
+        | GoogleSuggestParams
+        | GoogleMapsParams
+        | GoogleAiModeParams
+        | GoogleAdsParams
+        | GoogleLensParams
+        | BingSearchParams
+        | BingParams
+        | YoutubeTranscriptParams
+        | AmazonProductParams
+        | AmazonPricingParams
+        | AmazonSearchParams
+        | AmazonSellersParams
+        | AmazonBestsellersParams
+        | AmazonParams
+        | EcommerceParams
+        | WalmartProductParams
+        | WalmartSearchParams
+        | WalmartParams
+        | TargetProductParams
+        | TargetSearchParams
+        | TargetStoreParams
+        | LowesSearchParams
+        | UniversalParams
+        | ChatgptParams
+        | PerplexityParams
+        | GeminiParams
+        | BbbParams
+        | AutotraderParams
+        | MobileParams
+        | AirbnbParams
+        | AppleAppStoreParams
+        | InstagramGraphqlProfileParams
+        | TiktokPostParams
+        | TiktokShopSearchParams
+        | TiktokShopProductParams
+        | TiktokParams
+        | RedditPostParams
+        | RedditSubredditParams
+        | RedditUserParams
+        | YoutubeVideoParams
+        | YoutubeMetadataParams
+        | YoutubeSearchParams
+        | YoutubeSearchMaxParams
+        | YoutubeSubtitlesParams
+        | YoutubeChannelParams
+    ],
+    pydantic.Field(discriminator="target"),
 ]
-BatchRequest = ScrapeRequest
+
+BatchRequest = Annotated[
+    Union[
+        UniversalEcommerceBatchParams
+        | GoogleSearchBatchParams
+        | GoogleTravelHotelsBatchParams
+        | GoogleTrendsExploreBatchParams
+        | GoogleShoppingSearchBatchParams
+        | GoogleShoppingProductBatchParams
+        | GoogleBatchParams
+        | GoogleSuggestBatchParams
+        | GoogleMapsBatchParams
+        | GoogleAiModeBatchParams
+        | GoogleAdsBatchParams
+        | GoogleLensBatchParams
+        | BingSearchBatchParams
+        | BingBatchParams
+        | YoutubeTranscriptBatchParams
+        | AmazonProductBatchParams
+        | AmazonPricingBatchParams
+        | AmazonSearchBatchParams
+        | AmazonSellersBatchParams
+        | AmazonBestsellersBatchParams
+        | AmazonBatchParams
+        | EcommerceBatchParams
+        | WalmartProductBatchParams
+        | WalmartSearchBatchParams
+        | WalmartBatchParams
+        | TargetProductBatchParams
+        | TargetSearchBatchParams
+        | TargetStoreBatchParams
+        | LowesSearchBatchParams
+        | UniversalBatchParams
+        | ChatgptBatchParams
+        | PerplexityBatchParams
+        | GeminiBatchParams
+        | BbbBatchParams
+        | AutotraderBatchParams
+        | MobileBatchParams
+        | AirbnbBatchParams
+        | AppleAppStoreBatchParams
+        | InstagramGraphqlProfileBatchParams
+        | TiktokPostBatchParams
+        | TiktokShopSearchBatchParams
+        | TiktokShopProductBatchParams
+        | TiktokBatchParams
+        | RedditPostBatchParams
+        | RedditSubredditBatchParams
+        | RedditUserBatchParams
+        | YoutubeVideoBatchParams
+        | YoutubeMetadataBatchParams
+        | YoutubeSearchBatchParams
+        | YoutubeSearchMaxBatchParams
+        | YoutubeSubtitlesBatchParams
+        | YoutubeChannelBatchParams
+    ],
+    pydantic.Field(discriminator="target"),
+]

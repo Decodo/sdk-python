@@ -81,11 +81,21 @@ def _get_targets_file_contents(api: WebScrapingApiIR) -> str:
         "target": "TargetStoreParams",
     }
 
+    BATCH_CLASS_NAME_OVERRIDES: dict[str, str] = {
+        "target": "TargetStoreBatchParams",
+    }
+
     def _class_name(target_key: str) -> str:
         if target_key in CLASS_NAME_OVERRIDES:
             return CLASS_NAME_OVERRIDES[target_key]
         return f"{to_pascal_case(target_key)}Params"
 
+    def _batch_class_name(target_key: str) -> str:
+        if target_key in BATCH_CLASS_NAME_OVERRIDES:
+            return BATCH_CLASS_NAME_OVERRIDES[target_key]
+        return f"{to_pascal_case(target_key)}BatchParams"
+
+    # Emit per-target sync Params classes
     for target_key, target in api["targets"].items():
         type_name = _class_name(target_key)
         member = to_enum_member_name(target_key)
@@ -100,37 +110,66 @@ def _get_targets_file_contents(api: WebScrapingApiIR) -> str:
                 python_type = _json_schema_type_to_python(param_schema)
                 field_name = _sanitize_field_name(param_key)
                 if field_name != param_key:
-                    lines.append(f"    {field_name}: {python_type} | None = pydantic.Field(None, alias={json.dumps(param_key)})")  # noqa: E501
+                    lines.append(
+                        f"    {field_name}: {python_type} | None = pydantic.Field(None, alias={json.dumps(param_key)})"
+                    )  # noqa: E501
                 else:
                     lines.append(f"    {field_name}: {python_type} | None = None")
         lines.append("")
 
-    lines.append("class TargetMeta(pydantic.BaseModel):")
-    lines.append("    group: str")
-    lines.append("    response_format: str")
-    lines.append("    parameters: list[str]")
-    lines.append("")
+    # Emit per-target batch Params classes (url/query become list[str])
+    for target_key, target in api["targets"].items():
+        batch_type_name = _batch_class_name(target_key)
+        member = to_enum_member_name(target_key)
+        properties = target["parameter_schema"].get("properties", {})
 
-    lines.append("target_meta: dict[str, TargetMeta] = {")
+        lines.append(f"class {batch_type_name}(pydantic.BaseModel):")
+        lines.append("    model_config = pydantic.ConfigDict(populate_by_name=True)")
+        lines.append(f"    target: Literal[Target.{member}] = Target.{member}")
+        params = {k: v for k, v in properties.items() if k != "target"}
+        if params:
+            for param_key, param_schema in params.items():
+                field_name = _sanitize_field_name(param_key)
+                if param_key in ("url", "query"):
+                    python_type = "list[str]"
+                else:
+                    python_type = _json_schema_type_to_python(param_schema)
+                if field_name != param_key:
+                    lines.append(
+                        f"    {field_name}: {python_type} | None = pydantic.Field(None, alias={json.dumps(param_key)})"
+                    )  # noqa: E501
+                else:
+                    lines.append(f"    {field_name}: {python_type} | None = None")
+        lines.append("")
+
+    # target_meta as plain dict-of-dicts (no TargetMeta class here)
+    lines.append("target_meta: dict[str, dict[str, Any]] = {")
     for target_key, target in api["targets"].items():
         member = to_enum_member_name(target_key)
         param_keys = _get_target_parameter_keys(target["parameter_schema"])
         params_list = ", ".join(json.dumps(p) for p in param_keys)
-        lines.append(f"    Target.{member}.value: TargetMeta(")
-        lines.append(f"        group={json.dumps(target['group'])},")
-        lines.append(f"        response_format={json.dumps(target['response_format'])},")
-        lines.append(f"        parameters=[{params_list}],")
-        lines.append("    ),")
+        lines.append(f"    Target.{member}.value: {{")
+        lines.append(f'        "group": {json.dumps(target["group"])},')
+        lines.append(f'        "response_format": {json.dumps(target["response_format"])},')
+        lines.append(f'        "parameters": [{params_list}],')
+        lines.append("    },")
     lines.append("}")
     lines.append("")
 
-    # Discriminated union for ScrapeRequest / BatchRequest
+    # Discriminated union for ScrapeRequest
     union_parts = " | ".join(_class_name(k) for k in target_keys)
     lines.append("ScrapeRequest = Annotated[")
     lines.append(f"    Union[{union_parts}],")
     lines.append("    pydantic.Field(discriminator='target'),")
     lines.append("]")
-    lines.append("BatchRequest = ScrapeRequest")
+    lines.append("")
+
+    # Discriminated union for BatchRequest
+    batch_union_parts = " | ".join(_batch_class_name(k) for k in target_keys)
+    lines.append("BatchRequest = Annotated[")
+    lines.append(f"    Union[{batch_union_parts}],")
+    lines.append("    pydantic.Field(discriminator='target'),")
+    lines.append("]")
     lines.append("")
 
     return "\n".join(lines)
