@@ -53,7 +53,7 @@ class TestWebScrapingApiValidation:
         api = WebScrapingApi(http, _StrictSchema())
 
         with pytest.raises(ValidationError):
-            api.scrape({"target": "google_search", "query": ""})  # type: ignore[arg-type]
+            api.scrape({"target": "google_search", "query": ""})
 
         http.post.assert_not_called()
 
@@ -61,7 +61,7 @@ class TestWebScrapingApiValidation:
         http = _make_http_mock()
         api = WebScrapingApi(http, _StrictSchema())
 
-        api.scrape({"target": "google_search", "query": "coffee"})  # type: ignore[arg-type]
+        api.scrape({"target": "google_search", "query": "coffee"})
 
         http.post.assert_called_once()
 
@@ -69,6 +69,6 @@ class TestWebScrapingApiValidation:
         http = _make_http_mock()
         api = WebScrapingApi(http, BundledSchema.shared)
 
-        api.scrape({"target": "google_search", "query": "coffee"})  # type: ignore[arg-type]
+        api.scrape({"target": "google_search", "query": "coffee"})
 
         http.post.assert_called_once()
