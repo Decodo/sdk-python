@@ -57,6 +57,11 @@ strict = true
 packages = ["decodo"]
 exclude = "src/decodo/generated|^examples/|^build/"
 
+[[tool.mypy.overrides]]
+module = "decodo.generated.*"
+ignore_missing_imports = true
+ignore_errors = true
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 

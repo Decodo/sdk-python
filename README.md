@@ -42,11 +42,18 @@ Instead of manually constructing HTTP requests and validating payloads, you can 
 pip install decodo-sdk
 ```
 
-Until the package is published to PyPI, install directly from the repository (requires access):
+
+## Generate types
+
+After installing, run the type generator to create typed target parameters:
 
 ```bash
-pip install "git+https://github.com/Decodo/sdk-python.git"
+python -m decodo.codegen.codegen
 ```
+
+This fetches the latest API schema from the Decodo registry and writes typed classes to the `generated/` directory inside the package. The generated files are not included in the repository — you control when to update them.
+
+Re-run this command whenever Decodo publishes an updated schema to pick up new targets or changed parameters.
 
 ## Quick start
 

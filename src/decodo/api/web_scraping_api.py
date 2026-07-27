@@ -1,14 +1,16 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
 import jsonschema
 from pydantic import BaseModel
 
 import decodo.errors
-from decodo.generated.targets import BatchRequest, ScrapeRequest
 from decodo.http import HttpClient
+
+if TYPE_CHECKING:
+    from decodo.generated.targets import BatchRequest, ScrapeRequest
 from decodo.schema.bundled_schema import BundledSchema
 from decodo.schema.types import DecodoSchema
 from decodo.types.responses import (
