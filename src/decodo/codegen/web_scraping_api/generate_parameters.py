@@ -108,13 +108,14 @@ def get_parameters_file(api: WebScrapingApiIR) -> str:
     return "\n".join(lines)
 
 
-def generate_parameters_file() -> None:
+def generate_parameters_file(dest_dir: str | None = None) -> None:
     ir = fetch_intermediate_representation()
     api = ir["apis"]["webScrapingApi"]
     file_contents = get_parameters_file(api)
 
-    os.makedirs(out_dir, exist_ok=True)
-    out_path = os.path.join(out_dir, "parameters.py")
+    target = dest_dir if dest_dir is not None else out_dir
+    os.makedirs(target, exist_ok=True)
+    out_path = os.path.join(target, "parameters.py")
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(file_contents)
 

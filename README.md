@@ -82,9 +82,9 @@ Run the script:
 python main.py
 ```
 
-### With typed parameters (optional)
+### With typed parameters (recommended)
 
-For IDE autocomplete and parameter validation, run the type generator after installing:
+For IDE autocomplete and parameter validation, run the type generator once after installing. Dict-based usage works without this step, but typed classes require it:
 
 ```bash
 python -m decodo.codegen.codegen

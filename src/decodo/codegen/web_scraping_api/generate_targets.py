@@ -207,13 +207,14 @@ def generate_targets_enum_file() -> None:
     print(f"  {targets_enum_path} ({target_count} targets)")
 
 
-def generate_targets_file() -> None:
+def generate_targets_file(dest_dir: str | None = None) -> None:
     ir = fetch_intermediate_representation()
     api = ir["apis"]["webScrapingApi"]
     file_contents = _get_targets_file_contents(api)
 
-    os.makedirs(out_dir, exist_ok=True)
-    out_path = os.path.join(out_dir, "targets.py")
+    target = dest_dir if dest_dir is not None else out_dir
+    os.makedirs(target, exist_ok=True)
+    out_path = os.path.join(target, "targets.py")
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(file_contents)
 

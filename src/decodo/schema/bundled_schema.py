@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import warnings
 from pathlib import Path
 from typing import Any, ClassVar, cast
 
@@ -42,6 +43,12 @@ class BundledSchema:
             }
             self._target_meta = _target_meta if _target_meta is not None else build_target_meta(api_targets)
         else:
+            warnings.warn(
+                "Decodo IR schema not found — payload validation is disabled. "
+                "Run: python -m decodo.codegen.codegen",
+                RuntimeWarning,
+                stacklevel=2,
+            )
             self._request_schemas = {}
             self._target_meta = _target_meta or {}
 
