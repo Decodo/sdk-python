@@ -19,5 +19,8 @@ jobs:
       - name: Install dependencies
         run: pip install -e ".[dev]"
 
+      - name: Generate types
+        run: python -m decodo.codegen.codegen
+
       - name: Pytest
         run: pytest
