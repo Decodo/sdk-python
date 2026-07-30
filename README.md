@@ -42,19 +42,6 @@ Instead of manually constructing HTTP requests and validating payloads, you can 
 pip install decodo-sdk
 ```
 
-
-## Generate types
-
-After installing, run the type generator to create typed target parameters:
-
-```bash
-python -m decodo.codegen.codegen
-```
-
-This fetches the latest API schema from the Decodo registry and writes typed classes to the `generated/` directory inside the package. The generated files are not included in the repository — you control when to update them.
-
-Re-run this command whenever Decodo publishes an updated schema to pick up new targets or changed parameters.
-
 ## Quick start
 
 Create a new project:
@@ -72,6 +59,40 @@ Get your Web Scraping API token from the [Decodo dashboard](https://dashboard.de
 
 ```python
 # main.py
+from decodo import DecodoClient, DecodoConfig, WebScrapingApiConfig
+
+client = DecodoClient(
+    DecodoConfig(
+        web_scraping_api=WebScrapingApiConfig(token="<basic_auth_token>"),
+    )
+)
+
+result = client.web_scraping_api.scrape({
+    "target": "google_search",
+    "query": "coffee shops",
+    "geo": "United States",
+    "parse": True,
+})
+print(result)
+```
+
+Run the script:
+
+```
+python main.py
+```
+
+### With typed parameters (optional)
+
+For IDE autocomplete and parameter validation, run the type generator after installing:
+
+```bash
+python -m decodo.codegen.codegen
+```
+
+Then use typed parameter classes instead of dicts:
+
+```python
 from decodo import DecodoClient, DecodoConfig, GoogleSearchParams, Target, WebScrapingApiConfig
 
 client = DecodoClient(
@@ -89,12 +110,6 @@ result = client.web_scraping_api.scrape(
     )
 )
 print(result)
-```
-
-Run the script:
-
-```
-python main.py
 ```
 
 <details>
@@ -205,15 +220,11 @@ The snippets below assume you have already constructed a client. See [Configurat
 Waits for the scraping result before returning:
 
 ```python
-from decodo import AmazonProductParams, Target
-
-result = client.web_scraping_api.scrape(
-    AmazonProductParams(
-        target=Target.AmazonProduct,
-        query="B09H74FXNW",
-        parse=True,
-    )
-)
+result = client.web_scraping_api.scrape({
+    "target": "amazon_product",
+    "query": "B09H74FXNW",
+    "parse": True,
+})
 ```
 
 ### Async scrape
@@ -221,15 +232,11 @@ result = client.web_scraping_api.scrape(
 Creates a scraping task and returns immediately. Poll separately for task status and results:
 
 ```python
-from decodo import GoogleSearchParams, Target
-
-task = client.web_scraping_api.scrape_async(
-    GoogleSearchParams(
-        target=Target.GoogleSearch,
-        query="laptop reviews",
-        parse=True,
-    )
-)
+task = client.web_scraping_api.scrape_async({
+    "target": "google_search",
+    "query": "laptop reviews",
+    "parse": True,
+})
 
 meta = client.web_scraping_api.get_status(task["id"])
 print(meta["status"])  # 'pending' | 'done' | 'faulted'
@@ -242,15 +249,11 @@ results = client.web_scraping_api.get_results(task["id"])
 Send multiple queries or URLs in a single request:
 
 ```python
-from decodo import GoogleSearchBatchParams, Target
-
-batch = client.web_scraping_api.scrape_batch(
-    GoogleSearchBatchParams(
-        target=Target.GoogleSearch,
-        query=["coffee", "tea", "juice"],
-        parse=True,
-    )
-)
+batch = client.web_scraping_api.scrape_batch({
+    "target": "google_search",
+    "query": ["coffee", "tea", "juice"],
+    "parse": True,
+})
 
 coffee_task_id = batch["queries"][0]["id"]
 
@@ -323,21 +326,18 @@ The SDK raises typed errors that map to API error codes:
 
 ```python
 from decodo import (
-    DecodoClient,
-    DecodoError,
     AuthenticationError,
     RateLimitError,
     ValidationError,
     TimeoutError,
-    Target,
 )
 
-from decodo import GoogleSearchParams
-
 try:
-    client.web_scraping_api.scrape(
-        GoogleSearchParams(target=Target.GoogleSearch, query="test", parse=True)
-    )
+    client.web_scraping_api.scrape({
+        "target": "google_search",
+        "query": "test",
+        "parse": True,
+    })
 except AuthenticationError:
     pass  # 401/403 - bad credentials
 except RateLimitError:
