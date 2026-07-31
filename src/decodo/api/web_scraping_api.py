@@ -36,6 +36,8 @@ class WebScrapingApi:
     def _validate(self, payload: dict[str, Any]) -> None:
         if self._schema is None:
             return
+        if "target" not in payload:
+            raise decodo.errors.ValidationError("missing required field 'target'")
         schema = self._schema.get_request_schema(payload.get("target"))  # type: ignore[arg-type]
         if not schema:
             return

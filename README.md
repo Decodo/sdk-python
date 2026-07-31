@@ -282,9 +282,14 @@ Each target accepts one primary input parameter (`url`, `query`, `product_id`, o
 | `Target.GoogleSearch` | Google Search results for a query | `{"target": Target.GoogleSearch, "query": "coffee shops"}` |
 | `Target.GoogleMaps` | Google Maps search results | `{"target": Target.GoogleMaps, "query": "coffee shops brooklyn"}` |
 | `Target.GoogleShoppingSearch` | Google Shopping search results | `{"target": Target.GoogleShoppingSearch, "query": "laptop"}` |
+| `Target.GoogleShoppingProduct` | Google Shopping product page | `{"target": Target.GoogleShoppingProduct, "query": "B09H74FXNW"}` |
 | `Target.GoogleSuggest` | Google Autocomplete suggestions | `{"target": Target.GoogleSuggest, "query": "coffee"}` |
 | `Target.GoogleLens` | Google Lens reverse image search | `{"target": Target.GoogleLens, "query": "https://example.com/cat.jpg"}` |
+| `Target.GoogleTravelHotels` | Google Travel hotel listings | `{"target": Target.GoogleTravelHotels, "query": "hotels in paris"}` |
+| `Target.GoogleTrendsExplore` | Google Trends explore data | `{"target": Target.GoogleTrendsExplore, "query": "coffee"}` |
+| `Target.GoogleAds` | Google Ads results for a query | `{"target": Target.GoogleAds, "query": "laptop"}` |
 | `Target.BingSearch` | Bing Search results | `{"target": Target.BingSearch, "query": "electric vehicles"}` |
+| `Target.Bing` | Raw Bing URL scraping | `{"target": Target.Bing, "url": "https://bing.com/search?q=laptop"}` |
 
 ### eCommerce
 
@@ -293,8 +298,15 @@ Each target accepts one primary input parameter (`url`, `query`, `product_id`, o
 | `Target.AmazonProduct` | Amazon product detail page by ASIN | `{"target": Target.AmazonProduct, "query": "B09H74FXNW"}` |
 | `Target.AmazonSearch` | Amazon search results | `{"target": Target.AmazonSearch, "query": "laptop"}` |
 | `Target.AmazonPricing` | Amazon pricing and offers | `{"target": Target.AmazonPricing, "query": "B09H74FXNW"}` |
+| `Target.AmazonSellers` | Amazon seller listings | `{"target": Target.AmazonSellers, "query": "B09H74FXNW"}` |
+| `Target.AmazonBestsellers` | Amazon bestsellers by category | `{"target": Target.AmazonBestsellers, "query": "electronics"}` |
 | `Target.WalmartProduct` | Walmart product page by product ID | `{"target": Target.WalmartProduct, "product_id": "15296401808"}` |
+| `Target.WalmartSearch` | Walmart search results | `{"target": Target.WalmartSearch, "query": "laptop"}` |
+| `Target.Walmart` | Raw Walmart URL scraping | `{"target": Target.Walmart, "url": "https://walmart.com/ip/15296401808"}` |
 | `Target.TargetProduct` | Target.com product page by product ID | `{"target": Target.TargetProduct, "product_id": "92186007"}` |
+| `Target.TargetSearch` | Target.com search results | `{"target": Target.TargetSearch, "query": "laptop"}` |
+| `Target.Target` | Raw Target.com URL scraping | `{"target": Target.Target, "url": "https://target.com/p/-/A-92186007"}` |
+| `Target.LowesSearch` | Lowe's search results | `{"target": Target.LowesSearch, "query": "drill"}` |
 | `Target.Ecommerce` | Generic eCommerce page with parser | `{"target": Target.Ecommerce, "url": "https://example.com/product/123"}` |
 
 ### Social media
@@ -303,9 +315,19 @@ Each target accepts one primary input parameter (`url`, `query`, `product_id`, o
 | --- | --- | --- |
 | `Target.RedditPost` | Reddit post by URL | `{"target": Target.RedditPost, "url": "https://reddit.com/r/nba/..."}` |
 | `Target.RedditSubreddit` | Reddit subreddit by URL | `{"target": Target.RedditSubreddit, "url": "https://reddit.com/r/nba/"}` |
+| `Target.RedditUser` | Reddit user profile by URL | `{"target": Target.RedditUser, "url": "https://reddit.com/user/example/"}` |
 | `Target.YoutubeVideo` | YouTube video by ID | `{"target": Target.YoutubeVideo, "query": "dFu9aKJoqGg"}` |
 | `Target.YoutubeSearch` | YouTube search results | `{"target": Target.YoutubeSearch, "query": "ambient music"}` |
+| `Target.YoutubeSearchMax` | YouTube search results (extended) | `{"target": Target.YoutubeSearchMax, "query": "ambient music"}` |
+| `Target.YoutubeMetadata` | YouTube video metadata by ID | `{"target": Target.YoutubeMetadata, "query": "dFu9aKJoqGg"}` |
+| `Target.YoutubeTranscript` | YouTube video transcript by ID | `{"target": Target.YoutubeTranscript, "query": "dFu9aKJoqGg"}` |
+| `Target.YoutubeSubtitles` | YouTube video subtitles by ID | `{"target": Target.YoutubeSubtitles, "query": "dFu9aKJoqGg"}` |
+| `Target.YoutubeChannel` | YouTube channel by URL | `{"target": Target.YoutubeChannel, "url": "https://youtube.com/@mkbhd"}` |
 | `Target.TiktokPost` | TikTok post by URL | `{"target": Target.TiktokPost, "url": "https://www.tiktok.com/@nba/video/..."}` |
+| `Target.TiktokShopSearch` | TikTok Shop search results | `{"target": Target.TiktokShopSearch, "query": "wireless earbuds"}` |
+| `Target.TiktokShopProduct` | TikTok Shop product page | `{"target": Target.TiktokShopProduct, "url": "https://www.tiktok.com/view/product/..."}` |
+| `Target.Tiktok` | Raw TikTok URL scraping | `{"target": Target.Tiktok, "url": "https://www.tiktok.com/@nba"}` |
+| `Target.InstagramGraphqlProfile` | Instagram profile via GraphQL | `{"target": Target.InstagramGraphqlProfile, "query": "nba"}` |
 
 ### AI tools
 
@@ -315,6 +337,16 @@ Each target accepts one primary input parameter (`url`, `query`, `product_id`, o
 | `Target.Perplexity` | Perplexity response for a prompt | `{"target": Target.Perplexity, "prompt": "What causes seasonal allergies?"}` |
 | `Target.Gemini` | Gemini response for a prompt | `{"target": Target.Gemini, "prompt": "What are the top three dog breeds?"}` |
 | `Target.GoogleAiMode` | Google AI Mode response | `{"target": Target.GoogleAiMode, "query": "What are the top three dog breeds?"}` |
+
+### Other
+
+| Target | Description | Example |
+| --- | --- | --- |
+| `Target.Bbb` | Better Business Bureau listing by URL | `{"target": Target.Bbb, "url": "https://bbb.org/us/ny/new-york/..."}` |
+| `Target.Autotrader` | Autotrader listing by URL | `{"target": Target.Autotrader, "url": "https://autotrader.com/cars-for-sale/..."}` |
+| `Target.Mobile` | Mobile.de listing by URL | `{"target": Target.Mobile, "url": "https://mobile.de/auto/..."}` |
+| `Target.Airbnb` | Airbnb listing by URL | `{"target": Target.Airbnb, "url": "https://airbnb.com/rooms/12345"}` |
+| `Target.AppleAppStore` | Apple App Store app by URL | `{"target": Target.AppleAppStore, "url": "https://apps.apple.com/app/id12345"}` |
 
 ### Universal scraping
 
