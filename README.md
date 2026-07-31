@@ -84,16 +84,19 @@ python main.py
 
 ### With typed parameters (recommended)
 
-For IDE autocomplete and parameter validation, run the type generator once after installing. Dict-based usage works without this step, but typed classes require it:
+For IDE autocomplete and parameter validation, run the type generator once after installing. Dict-based usage works without this step, but typed classes require it.
+
+**Installed via pip (standard install):** Generated files cannot be written into site-packages, so specify a local output directory:
 
 ```bash
-python -m decodo.codegen.codegen
+python -m decodo.codegen.codegen --out-dir ./decodo_generated
 ```
 
-Then use typed parameter classes instead of dicts:
+Then import directly from that directory:
 
 ```python
-from decodo import DecodoClient, DecodoConfig, GoogleSearchParams, Target, WebScrapingApiConfig
+from decodo_generated.targets import GoogleSearchParams
+from decodo import DecodoClient, DecodoConfig, Target, WebScrapingApiConfig
 
 client = DecodoClient(
     DecodoConfig(
@@ -110,6 +113,14 @@ result = client.web_scraping_api.scrape(
     )
 )
 print(result)
+```
+
+> **Note:** The directory name you pass to `--out-dir` becomes the import namespace. Using `./decodo_generated` means `from decodo_generated.targets import ...`. You can choose any name, but keep it consistent across your project.
+
+**Editable / source install (`pip install -e .`):** You can omit `--out-dir` and generated files will be written into the package directly, making `from decodo import GoogleSearchParams` work:
+
+```bash
+python -m decodo.codegen.codegen
 ```
 
 <details>
