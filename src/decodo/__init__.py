@@ -7,11 +7,24 @@ from .errors import (
     TimeoutError,
     ValidationError,
 )
+from .schema.bundled_schema import BundledSchema
+from .schema.remote_schema import RemoteSchema
+from .schema.types import DecodoSchema, RemoteSchemaLoadOptions
 from .targets import Target, targets
+from .types.responses import (
+    AsyncTaskResponse,
+    BatchResponse,
+    ResultEntry,
+    SyncResponse,
+    TaskMetadata,
+    TaskResultsResponse,
+    TaskStatus,
+)
 
+_codegen_available = False
 try:
-    from .generated.parameters import ParameterMeta, parameter_meta
-    from .generated.targets import (
+    from .generated.parameters import ParameterMeta, parameter_meta  # noqa: F401
+    from .generated.targets import (  # noqa: F401
         AirbnbBatchParams,
         AirbnbParams,
         AmazonBatchParams,
@@ -120,20 +133,9 @@ try:
         YoutubeVideoParams,
         target_meta,
     )
+    _codegen_available = True
 except ImportError:
     pass
-from .schema.bundled_schema import BundledSchema
-from .schema.remote_schema import RemoteSchema
-from .schema.types import DecodoSchema, RemoteSchemaLoadOptions
-from .types.responses import (
-    AsyncTaskResponse,
-    BatchResponse,
-    ResultEntry,
-    SyncResponse,
-    TaskMetadata,
-    TaskResultsResponse,
-    TaskStatus,
-)
 
 _CODEGEN_NAMES: frozenset[str] = frozenset(
     [
@@ -269,116 +271,7 @@ __all__ = [
     "DecodoSchema",
     "RemoteSchemaLoadOptions",
     "Target",
-    "target_meta",
     "targets",
-    "ScrapeRequest",
-    "BatchRequest",
-    "UniversalEcommerceParams",
-    "GoogleSearchParams",
-    "GoogleTravelHotelsParams",
-    "GoogleTrendsExploreParams",
-    "GoogleShoppingSearchParams",
-    "GoogleShoppingProductParams",
-    "GoogleParams",
-    "GoogleSuggestParams",
-    "GoogleMapsParams",
-    "GoogleAiModeParams",
-    "GoogleAdsParams",
-    "GoogleLensParams",
-    "BingSearchParams",
-    "BingParams",
-    "YoutubeTranscriptParams",
-    "AmazonProductParams",
-    "AmazonPricingParams",
-    "AmazonSearchParams",
-    "AmazonSellersParams",
-    "AmazonBestsellersParams",
-    "AmazonParams",
-    "EcommerceParams",
-    "WalmartProductParams",
-    "WalmartSearchParams",
-    "WalmartParams",
-    "TargetProductParams",
-    "TargetSearchParams",
-    "TargetStoreParams",
-    "LowesSearchParams",
-    "UniversalParams",
-    "ChatgptParams",
-    "PerplexityParams",
-    "GeminiParams",
-    "BbbParams",
-    "AutotraderParams",
-    "MobileParams",
-    "AirbnbParams",
-    "AppleAppStoreParams",
-    "InstagramGraphqlProfileParams",
-    "TiktokPostParams",
-    "TiktokShopSearchParams",
-    "TiktokShopProductParams",
-    "TiktokParams",
-    "RedditPostParams",
-    "RedditSubredditParams",
-    "RedditUserParams",
-    "YoutubeVideoParams",
-    "YoutubeMetadataParams",
-    "YoutubeSearchParams",
-    "YoutubeSearchMaxParams",
-    "YoutubeSubtitlesParams",
-    "YoutubeChannelParams",
-    "UniversalEcommerceBatchParams",
-    "GoogleSearchBatchParams",
-    "GoogleTravelHotelsBatchParams",
-    "GoogleTrendsExploreBatchParams",
-    "GoogleShoppingSearchBatchParams",
-    "GoogleShoppingProductBatchParams",
-    "GoogleBatchParams",
-    "GoogleSuggestBatchParams",
-    "GoogleMapsBatchParams",
-    "GoogleAiModeBatchParams",
-    "GoogleAdsBatchParams",
-    "GoogleLensBatchParams",
-    "BingSearchBatchParams",
-    "BingBatchParams",
-    "YoutubeTranscriptBatchParams",
-    "AmazonProductBatchParams",
-    "AmazonPricingBatchParams",
-    "AmazonSearchBatchParams",
-    "AmazonSellersBatchParams",
-    "AmazonBestsellersBatchParams",
-    "AmazonBatchParams",
-    "EcommerceBatchParams",
-    "WalmartProductBatchParams",
-    "WalmartSearchBatchParams",
-    "WalmartBatchParams",
-    "TargetProductBatchParams",
-    "TargetSearchBatchParams",
-    "TargetStoreBatchParams",
-    "LowesSearchBatchParams",
-    "UniversalBatchParams",
-    "ChatgptBatchParams",
-    "PerplexityBatchParams",
-    "GeminiBatchParams",
-    "BbbBatchParams",
-    "AutotraderBatchParams",
-    "MobileBatchParams",
-    "AirbnbBatchParams",
-    "AppleAppStoreBatchParams",
-    "InstagramGraphqlProfileBatchParams",
-    "TiktokPostBatchParams",
-    "TiktokShopSearchBatchParams",
-    "TiktokShopProductBatchParams",
-    "TiktokBatchParams",
-    "RedditPostBatchParams",
-    "RedditSubredditBatchParams",
-    "RedditUserBatchParams",
-    "YoutubeVideoBatchParams",
-    "YoutubeMetadataBatchParams",
-    "YoutubeSearchBatchParams",
-    "YoutubeSearchMaxBatchParams",
-    "YoutubeSubtitlesBatchParams",
-    "YoutubeChannelBatchParams",
-    "ParameterMeta",
-    "parameter_meta",
     "SyncResponse",
     "AsyncTaskResponse",
     "BatchResponse",
@@ -392,3 +285,6 @@ __all__ = [
     "ValidationError",
     "TimeoutError",
 ]
+
+if _codegen_available:
+    __all__ += list(_CODEGEN_NAMES)
