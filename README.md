@@ -6,7 +6,7 @@
 [![](https://dcbadge.limes.pink/api/server/https://discord.gg/Ja8dqKgvbZ)](https://discord.gg/Ja8dqKgvbZ)
 
 <p align="center">
-<a href="https://dashboard.decodo.com/integrations?utm_source=github&utm_medium=social&utm_campaign=mcp_server"> <img src="https://github.com/user-attachments/assets/a1e52a9e-3da1-4081-b3c6-053aafb8f196"/></a>
+<a href="https://dashboard.decodo.com/integrations?utm_source=github&utm_medium=social&utm_campaign=pythion_sdk"> <img src="https://github.com/user-attachments/assets/a1e52a9e-3da1-4081-b3c6-053aafb8f196"/></a>
 
 The official Python SDK for the Decodo Web Scraping API.
 
