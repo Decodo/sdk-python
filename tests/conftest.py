@@ -13,7 +13,7 @@ MINIMAL_IR_PATH = Path(__file__).parent / "schema" / "fixtures" / "minimal_ir.js
 
 @pytest.fixture(autouse=True, scope="session")
 def _patch_bundled_schema_ir_path() -> None:
-    _bundled_schema_mod._IR_JSON_PATH = MINIMAL_IR_PATH
+    _bundled_schema_mod._BUNDLED_IR_PATH = MINIMAL_IR_PATH
     _bundled_schema_mod.BundledSchema.shared = _bundled_schema_mod.BundledSchema()
 
 
