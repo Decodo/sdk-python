@@ -84,19 +84,10 @@ python main.py
 
 ### With typed parameters (recommended)
 
-For IDE autocomplete and parameter validation, run the type generator once after installing. Dict-based usage works without this step, but typed classes require it.
-
-**Installed via pip (standard install):** Generated files cannot be written into site-packages, so specify a local output directory:
-
-```bash
-python -m decodo.codegen.codegen --out-dir ./decodo_generated
-```
-
-Then import directly from that directory:
+Typed parameter classes are included in the package — no extra steps needed after `pip install decodo-sdk`:
 
 ```python
-from decodo_generated.targets import GoogleSearchParams
-from decodo import DecodoClient, DecodoConfig, Target, WebScrapingApiConfig
+from decodo import DecodoClient, DecodoConfig, GoogleSearchParams, Target, WebScrapingApiConfig
 
 client = DecodoClient(
     DecodoConfig(
@@ -115,13 +106,21 @@ result = client.web_scraping_api.scrape(
 print(result)
 ```
 
-> **Note:** The directory name you pass to `--out-dir` becomes the import namespace. Using `./decodo_generated` means `from decodo_generated.targets import ...`. You can choose any name, but keep it consistent across your project.
+### Updating types to a newer schema
 
-**Editable / source install (`pip install -e .`):** You can omit `--out-dir` and generated files will be written into the package directly, making `from decodo import GoogleSearchParams` work:
+The types bundled in the package reflect the schema at release time. To update them to the latest schema without waiting for a new release, run the type generator:
 
 ```bash
-python -m decodo.codegen.codegen
+python -m decodo.codegen.codegen --out-dir ./decodo_generated
 ```
+
+Then import from that directory instead:
+
+```python
+from decodo_generated.targets import GoogleSearchParams
+```
+
+> The directory name passed to `--out-dir` becomes the import namespace. `./decodo_generated` → `from decodo_generated.targets import ...`. You can use any name, but keep it consistent across your project.
 
 <details>
 <summary>Example response</summary>

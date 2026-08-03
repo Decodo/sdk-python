@@ -42,7 +42,7 @@ build-backend = "setuptools.build_meta"
 where = ["src"]
 
 [tool.setuptools.package-data]
-decodo = ["py.typed"]
+decodo = ["py.typed", "generated/decodo.ir.json"]
 
 [tool.ruff]
 line-length = 120

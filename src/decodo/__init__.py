@@ -256,7 +256,9 @@ def __getattr__(name: str) -> object:
     if name in _CODEGEN_NAMES:
         raise ImportError(
             f"'{name}' requires generated types. "
-            "Run: python -m decodo.codegen.codegen"
+            "Editable install: run python -m decodo.codegen.codegen, then use 'from decodo import ...'. "
+            "Pip install: run python -m decodo.codegen.codegen --out-dir ./decodo_generated, "
+            "then use 'from decodo_generated.targets import ...'."
         )
     raise AttributeError(f"module 'decodo' has no attribute {name!r}")
 

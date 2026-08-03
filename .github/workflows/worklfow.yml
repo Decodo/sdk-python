@@ -20,6 +20,12 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Generate types
+        run: |
+          pip install httpx pydantic jsonschema
+          pip install -e .
+          python -m decodo.codegen.codegen
+
       - name: Build
         run: |
           pip install build

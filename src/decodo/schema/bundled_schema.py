@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import warnings
 from pathlib import Path
 from typing import Any, ClassVar, cast
@@ -20,14 +21,31 @@ def _load_target_meta() -> dict[str, Any] | None:
 
 _target_meta = _load_target_meta()
 
-_IR_JSON_PATH = Path(__file__).parent.parent / "generated" / "decodo.ir.json"
+_BUNDLED_IR_PATH = Path(__file__).parent.parent / "generated" / "decodo.ir.json"
+
+
+def _find_ir_path() -> Path | None:
+    env = os.environ.get("DECODO_IR_PATH")
+    if env:
+        p = Path(env)
+        if p.is_file():
+            return p
+    local = Path.cwd() / "decodo_generated" / "decodo.ir.json"
+    if local.is_file():
+        return local
+    if _BUNDLED_IR_PATH.is_file():
+        return _BUNDLED_IR_PATH
+    return None
 
 
 def _load_ir_json() -> dict[str, Any] | None:
+    path = _find_ir_path()
+    if path is None:
+        return None
     try:
-        with open(_IR_JSON_PATH, encoding="utf-8") as f:
+        with open(path, encoding="utf-8") as f:
             return json.load(f)  # type: ignore[no-any-return]
-    except FileNotFoundError:
+    except (OSError, json.JSONDecodeError):
         return None
 
 
@@ -45,7 +63,8 @@ class BundledSchema:
         else:
             warnings.warn(
                 "Decodo IR schema not found — payload validation is disabled. "
-                "Run: python -m decodo.codegen.codegen",
+                "Run: python -m decodo.codegen.codegen (editable install) or "
+                "python -m decodo.codegen.codegen --out-dir ./decodo_generated (pip install).",
                 RuntimeWarning,
                 stacklevel=2,
             )
