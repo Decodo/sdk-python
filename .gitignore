@@ -33,5 +33,8 @@ htmlcov/
 # Inputs (fetched at codegen time)
 inputs/decodo.ir.json
 
+# Generated types (run `python -m decodo.codegen.codegen` to regenerate)
+src/decodo/generated/
+
 # OS
 .DS_Store

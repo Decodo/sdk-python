@@ -17,6 +17,7 @@ _THIS_DIR = Path(__file__).parent
 
 local_ir_path = str((_THIS_DIR / "../../../.." / "inputs" / "decodo.ir.json").resolve())
 out_dir = str((_THIS_DIR / "../../generated").resolve())
+targets_enum_path = str((_THIS_DIR / "../../targets.py").resolve())
 
 
 def to_pascal_case(s: str) -> str:

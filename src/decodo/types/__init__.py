@@ -1,4 +1,7 @@
-from .requests import BatchRequest, ScrapeRequest
+try:
+    from .requests import BatchRequest, ScrapeRequest
+except ImportError:
+    pass
 from .responses import (
     AsyncTaskResponse,
     BatchResponse,

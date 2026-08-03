@@ -1,0 +1,63 @@
+# Minimal target enum — committed to source.
+# Run `python -m decodo.codegen.codegen` to regenerate when the IR schema changes.
+from __future__ import annotations
+
+from enum import StrEnum
+
+
+class Target(StrEnum):
+    UniversalEcommerce = "universal_ecommerce"
+    GoogleSearch = "google_search"
+    GoogleTravelHotels = "google_travel_hotels"
+    GoogleTrendsExplore = "google_trends_explore"
+    GoogleShoppingSearch = "google_shopping_search"
+    GoogleShoppingProduct = "google_shopping_product"
+    Google = "google"
+    GoogleSuggest = "google_suggest"
+    GoogleMaps = "google_maps"
+    GoogleAiMode = "google_ai_mode"
+    GoogleAds = "google_ads"
+    GoogleLens = "google_lens"
+    BingSearch = "bing_search"
+    Bing = "bing"
+    YoutubeTranscript = "youtube_transcript"
+    AmazonProduct = "amazon_product"
+    AmazonPricing = "amazon_pricing"
+    AmazonSearch = "amazon_search"
+    AmazonSellers = "amazon_sellers"
+    AmazonBestsellers = "amazon_bestsellers"
+    Amazon = "amazon"
+    Ecommerce = "ecommerce"
+    WalmartProduct = "walmart_product"
+    WalmartSearch = "walmart_search"
+    Walmart = "walmart"
+    TargetProduct = "target_product"
+    TargetSearch = "target_search"
+    Target = "target"
+    LowesSearch = "lowes_search"
+    Universal = "universal"
+    Chatgpt = "chatgpt"
+    Perplexity = "perplexity"
+    Gemini = "gemini"
+    Bbb = "bbb"
+    Autotrader = "autotrader"
+    Mobile = "mobile"
+    Airbnb = "airbnb"
+    AppleAppStore = "apple_app_store"
+    InstagramGraphqlProfile = "instagram_graphql_profile"
+    TiktokPost = "tiktok_post"
+    TiktokShopSearch = "tiktok_shop_search"
+    TiktokShopProduct = "tiktok_shop_product"
+    Tiktok = "tiktok"
+    RedditPost = "reddit_post"
+    RedditSubreddit = "reddit_subreddit"
+    RedditUser = "reddit_user"
+    YoutubeVideo = "youtube_video"
+    YoutubeMetadata = "youtube_metadata"
+    YoutubeSearch = "youtube_search"
+    YoutubeSearchMax = "youtube_search_max"
+    YoutubeSubtitles = "youtube_subtitles"
+    YoutubeChannel = "youtube_channel"
+
+
+targets: list[str] = [t.value for t in Target]
