@@ -40,6 +40,12 @@ class WebScrapingApi:
             raise decodo.errors.ValidationError("missing required field 'target'")
         schema = self._schema.get_request_schema(payload.get("target"))  # type: ignore[arg-type]
         if not schema:
+            target = payload["target"]
+            valid = self._schema.list_targets()
+            if target not in valid:
+                raise decodo.errors.ValidationError(
+                    f"unknown target {target!r}. Valid targets: {', '.join(sorted(valid))}"
+                )
             return
         try:
             jsonschema.validate(payload, schema)

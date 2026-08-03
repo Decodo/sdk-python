@@ -121,7 +121,7 @@ def _get_targets_file_contents(api: WebScrapingApiIR) -> str:
         properties: dict[str, Any] = target["parameter_schema"].get("properties", {})
 
         lines.append(f"class {type_name}(pydantic.BaseModel):")
-        lines.append("    model_config = pydantic.ConfigDict(populate_by_name=True)")
+        lines.append("    model_config = pydantic.ConfigDict(populate_by_name=True, extra='forbid')")
         lines.append(f"    target: Literal[Target.{member}] = Target.{member}")
         params = {k: v for k, v in properties.items() if k != "target"}
         if params:
@@ -143,7 +143,7 @@ def _get_targets_file_contents(api: WebScrapingApiIR) -> str:
         properties = target["parameter_schema"].get("properties", {})
 
         lines.append(f"class {batch_type_name}(pydantic.BaseModel):")
-        lines.append("    model_config = pydantic.ConfigDict(populate_by_name=True)")
+        lines.append("    model_config = pydantic.ConfigDict(populate_by_name=True, extra='forbid')")
         lines.append(f"    target: Literal[Target.{member}] = Target.{member}")
         params = {k: v for k, v in properties.items() if k != "target"}
         if params:
