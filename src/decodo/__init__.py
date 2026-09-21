@@ -1,4 +1,4 @@
-from .api.web_scraping_api import WebScrapingApi
+from .api.web_scraping_api import WebScrapingApi, WebScrapingApiRoutes
 from .client import DecodoClient, DecodoConfig, WebScrapingApiConfig
 from .errors import (
     AuthenticationError,
@@ -268,6 +268,7 @@ __all__ = [
     "DecodoConfig",
     "WebScrapingApiConfig",
     "WebScrapingApi",
+    "WebScrapingApiRoutes",
     "BundledSchema",
     "RemoteSchema",
     "DecodoSchema",
