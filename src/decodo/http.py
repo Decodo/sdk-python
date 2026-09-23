@@ -46,7 +46,7 @@ class HttpClient:
             self._auth_header = f"Basic {config.auth.token}"
         else:
             assert isinstance(config.auth, ApiKeyAuth)
-            self._auth_header = config.auth.api_key
+            self._auth_header = f"Bearer {config.auth.api_key}"
 
     def request(self, method: str, path: str, body: Any = None) -> Any:
         url = f"{self._base_url}{path}"
