@@ -567,7 +567,7 @@ try:
 except AuthenticationError:
     # Handle authentication failures.
     raise SystemExit(
-        "Invalid API key. Check the key in your dashboard."
+        "Invalid API key or token. Check your credentials in the dashboard."
     )
 
 except RateLimitError:
