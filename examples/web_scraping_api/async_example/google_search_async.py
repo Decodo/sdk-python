@@ -10,11 +10,11 @@ from decodo import (
     WebScrapingApiConfig,
 )
 
-token = os.environ["DECODO_TOKEN"]
+api_key = os.environ["DECODO_API_KEY"]
 
 client = DecodoClient(
     DecodoConfig(
-        web_scraping_api=WebScrapingApiConfig(token=token),
+        web_scraping_api=WebScrapingApiConfig(api_key=api_key),
     )
 )
 

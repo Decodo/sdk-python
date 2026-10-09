@@ -66,7 +66,7 @@ def _resolve_transport(config: WebScrapingApiConfig) -> _Transport:
             routes=SCRAPER_API_ROUTES,
         )
 
-    raise ValueError("web_scraping_api requires token in DecodoConfig.")
+    raise ValueError("web_scraping_api requires api_key or token in DecodoConfig.")
 
 
 def _not_configured(namespace: str, hint: str) -> Any:

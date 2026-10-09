@@ -55,7 +55,7 @@ pip install decodo-sdk
 touch main.py
 ```
 
-Get your Web Scraping API token from the [Decodo dashboard](https://dashboard.decodo.com/welcome). The token is the base64-encoded `user:password` value from the Basic Auth credentials shown in the dashboard.
+Copy your Web Data API key from your Web Data API subscription on the [Decodo dashboard](https://dashboard.decodo.com/web-data/playground). Older plans only have a basic authentication token, which you can pass as `token` instead (see [Configuration](#configuration)).
 
 Every target has a corresponding parameter class. Import the one you need, fill in its fields, and pass it to `scrape()`:
 
@@ -71,7 +71,7 @@ from decodo import (
 client = DecodoClient(
     DecodoConfig(
         web_scraping_api=WebScrapingApiConfig(
-            token="<basic_auth_token>",
+            api_key="<api_key>",
         ),
     )
 )
@@ -235,16 +235,30 @@ from decodo import (
 client = DecodoClient(
     DecodoConfig(
         web_scraping_api=WebScrapingApiConfig(
-            token="<basic_auth_token>",
+            api_key="<api_key>",
         ),
         timeout_ms=120_000,  # optional, request timeout in ms (default: 180000)
     )
 )
 ```
 
+Pass either `api_key` or `token`, not both. The client raises `ValueError` if you set both.
+
+```python
+# Basic auth token (older plans)
+client = DecodoClient(
+    DecodoConfig(
+        web_scraping_api=WebScrapingApiConfig(
+            token="<basic_auth_token>",
+        ),
+    )
+)
+```
+
 | Parameter | Description |
 | --- | --- |
-| `token` | Web Scraping API basic auth token, the base64-encoded `user:password` string from the Decodo dashboard |
+| `api_key` | Web Data API key. Recommended |
+| `token` | Web Scraping API basic auth token for older plans, the base64-encoded `user:password` string from the Decodo dashboard. Use it instead of `api_key` |
 | `timeout_ms` | Request timeout in milliseconds (default: 180000) |
 
 ## Web Scraping API
@@ -268,7 +282,7 @@ from decodo import (
 client = DecodoClient(
     DecodoConfig(
         web_scraping_api=WebScrapingApiConfig(
-            token="<basic_auth_token>",
+            api_key="<api_key>",
         ),
     )
 )
@@ -302,7 +316,7 @@ from decodo import (
 client = DecodoClient(
     DecodoConfig(
         web_scraping_api=WebScrapingApiConfig(
-            token="<basic_auth_token>",
+            api_key="<api_key>",
         ),
     )
 )
@@ -355,7 +369,7 @@ from decodo import (
 client = DecodoClient(
     DecodoConfig(
         web_scraping_api=WebScrapingApiConfig(
-            token="<basic_auth_token>",
+            api_key="<api_key>",
         ),
     )
 )
@@ -527,7 +541,7 @@ from decodo import (
 client = DecodoClient(
     DecodoConfig(
         web_scraping_api=WebScrapingApiConfig(
-            token="<basic_auth_token>",
+            api_key="<api_key>",
         ),
     )
 )
@@ -553,7 +567,7 @@ try:
 except AuthenticationError:
     # Handle authentication failures.
     raise SystemExit(
-        "Invalid token. Check the Basic Auth credentials in your dashboard."
+        "Invalid API key or token. Check your credentials in the dashboard."
     )
 
 except RateLimitError:
