@@ -34,3 +34,32 @@ class ValidationError(DecodoError):
 class TimeoutError(Exception):
     def __init__(self, message: str = "The request timed out.") -> None:
         super().__init__(message)
+
+
+class CrawlError(DecodoError):
+    """Raised by ``crawl()`` when the crawl ends ``faulted`` or ``cancelled``."""
+
+    crawl_id: str
+    status: str
+    reason: str | None
+
+    def __init__(self, crawl_id: str, status: str, reason: str | None = None) -> None:
+        detail = f" ({reason})" if reason else ""
+        super().__init__(f"Crawl {crawl_id} ended with status {status}{detail}.", 200, status)
+        self.crawl_id = crawl_id
+        self.status = status
+        self.reason = reason
+
+
+class CrawlTimeoutError(TimeoutError):
+    """Raised by ``crawl()`` when ``timeout`` elapses. The crawl keeps running on the server."""
+
+    crawl_id: str
+
+    def __init__(self, crawl_id: str, timeout: float) -> None:
+        super().__init__(
+            f"Crawl {crawl_id} did not finish within {timeout:g}s. "
+            "It is still running: poll get_crawl_status, fetch get_crawl_results later, "
+            "or stop it with cancel_crawl."
+        )
+        self.crawl_id = crawl_id

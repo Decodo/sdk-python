@@ -255,11 +255,11 @@ client = DecodoClient(
 )
 ```
 
-| Parameter | Description |
-| --- | --- |
-| `api_key` | Web Data API key. Recommended |
-| `token` | Web Scraping API basic auth token for older plans, the base64-encoded `user:password` string from the Decodo dashboard. Use it instead of `api_key` |
-| `timeout_ms` | Request timeout in milliseconds (default: 180000) |
+| Parameter    | Description                                                                                                                                         |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `api_key`    | Web Data API key. Recommended                                                                                                                       |
+| `token`      | Web Scraping API basic auth token for older plans, the base64-encoded `user:password` string from the Decodo dashboard. Use it instead of `api_key` |
+| `timeout_ms` | Request timeout in milliseconds (default: 180000)                                                                                                   |
 
 ## Web Scraping API
 
@@ -403,6 +403,115 @@ for task in batch["queries"]:
     print(result)
 ```
 
+## Data API: search, map and crawl
+
+These endpoints are served by the Data API at `data.decodo.com` and need an `api_key`. Calling them on a client configured with a basic auth `token` raises `ValueError` saying an API key is required. They live on the same `client.web_scraping_api` namespace.
+
+Parameters are plain dictionaries. The `SearchRequest`, `MapRequest` and `CrawlRequest` types are `TypedDict`s you can use for editor completion; they are always importable and need no code generation. Bodies are validated against the bundled schema before the request is sent, like `scrape`.
+
+### Search
+
+Runs a web search and returns the parsed result document:
+
+```python
+from decodo import DecodoClient, DecodoConfig, SearchRequest, WebScrapingApiConfig
+
+client = DecodoClient(
+    DecodoConfig(
+        web_scraping_api=WebScrapingApiConfig(
+            api_key="<api_key>",
+        ),
+    )
+)
+
+result = client.web_scraping_api.search(
+    SearchRequest(query="coffee shops", geo="United States", page=1)
+)
+
+for item in result.get("organic", []):
+    print(item["rank"], item["title"], item["link"])
+```
+
+A search that ran but could not be scraped still answers with HTTP 200 and `status: "failed"` plus a `message`, so check `result["status"]` before reading the fields.
+
+### Map
+
+Discovers the links on a site, from its pages and sitemap:
+
+```python
+from decodo import DecodoClient, DecodoConfig, MapRequest, WebScrapingApiConfig
+
+client = DecodoClient(
+    DecodoConfig(
+        web_scraping_api=WebScrapingApiConfig(
+            api_key="<api_key>",
+        ),
+    )
+)
+
+result = client.web_scraping_api.map(
+    MapRequest(url="https://www.example.com", limit=100, sitemap="include")
+)
+
+for link in result["results"][0]["content"]["links"]:
+    print(link["url"])
+```
+
+### Crawl
+
+`crawl` starts a crawl, waits for it to finish and returns every page with its content:
+
+```python
+from decodo import (
+    CrawlError,
+    CrawlRequest,
+    CrawlTimeoutError,
+    DecodoClient,
+    DecodoConfig,
+    WebScrapingApiConfig,
+)
+
+client = DecodoClient(
+    DecodoConfig(
+        web_scraping_api=WebScrapingApiConfig(
+            api_key="<api_key>",
+        ),
+    )
+)
+
+try:
+    pages = client.web_scraping_api.crawl(
+        CrawlRequest(url="https://www.example.com", limit=20, max_depth=2),
+        poll_interval=5,
+        timeout=600,
+    )
+except CrawlTimeoutError as err:
+    print(f"Still running, fetch it later with get_crawl_results({err.crawl_id!r})")
+except CrawlError as err:
+    print(f"Crawl {err.crawl_id} ended {err.status}: {err.reason}")
+else:
+    for page in pages:
+        print(page["url"], page["status"], page.get("content", "")[:80])
+```
+
+A crawl that stops early because of `max_duration` or a vendor limit ends with status `truncated`; `crawl` returns the pages it did collect. Pages are returned as the API lists them, each with its `status` (`pending`, `done` or `faulted`) and, when the fetch failed, a `content_error` instead of `content`.
+
+The lower-level methods let you drive a crawl yourself, for example to start it in one process and collect it in another:
+
+```python
+started = client.web_scraping_api.start_crawl(CrawlRequest(url="https://www.example.com"))
+crawl_id = started["crawl_id"]
+
+status = client.web_scraping_api.get_crawl_status(crawl_id)
+print(status["status"], status["completed"], status["in_flight"])
+
+pages = client.web_scraping_api.get_crawl_results(crawl_id)
+
+client.web_scraping_api.cancel_crawl(crawl_id)
+```
+
+`get_crawl_status` returns `pending`, `done`, `faulted`, `cancelled` or `truncated`, with a `reason` when the crawl stopped early.
+
 ## Targets and parameter classes
 
 Every target in the `Target` enum has a matching parameter class. The name of the class is the enum member name followed by `Params`:
@@ -432,85 +541,84 @@ Each target accepts one primary input parameter (`url`, `query`, `product_id`, o
 
 ### Search engines
 
-| Target | Parameter class | Description | Example input |
-| --- | --- | --- | --- |
-| `Target.GoogleSearch` | `GoogleSearchParams` | Google Search results for a query | `query="coffee shops"` |
-| `Target.GoogleMaps` | `GoogleMapsParams` | Google Maps search results | `query="coffee shops brooklyn"` |
-| `Target.GoogleShoppingSearch` | `GoogleShoppingSearchParams` | Google Shopping search results | `query="laptop"` |
-| `Target.GoogleShoppingProduct` | `GoogleShoppingProductParams` | Google Shopping product page | `query="laptop"` |
-| `Target.GoogleSuggest` | `GoogleSuggestParams` | Google Autocomplete suggestions | `query="coffee"` |
-| `Target.GoogleLens` | `GoogleLensParams` | Google Lens reverse image search | `query="https://example.com/cat.jpg"` |
-| `Target.GoogleTravelHotels` | `GoogleTravelHotelsParams` | Google Travel hotel listings | `query="hotels in paris"` |
-| `Target.GoogleTrendsExplore` | `GoogleTrendsExploreParams` | Google Trends explore data | `query="coffee"` |
-| `Target.GoogleAds` | `GoogleAdsParams` | Google Ads results for a query | `query="laptop"` |
-| `Target.BingSearch` | `BingSearchParams` | Bing Search results | `query="electric vehicles"` |
-| `Target.Bing` | `BingParams` | Raw Bing URL scraping | `url="https://bing.com/search?q=laptop"` |
+| Target                         | Parameter class               | Description                       | Example input                            |
+| ------------------------------ | ----------------------------- | --------------------------------- | ---------------------------------------- |
+| `Target.GoogleSearch`          | `GoogleSearchParams`          | Google Search results for a query | `query="coffee shops"`                   |
+| `Target.GoogleMaps`            | `GoogleMapsParams`            | Google Maps search results        | `query="coffee shops brooklyn"`          |
+| `Target.GoogleShoppingSearch`  | `GoogleShoppingSearchParams`  | Google Shopping search results    | `query="laptop"`                         |
+| `Target.GoogleShoppingProduct` | `GoogleShoppingProductParams` | Google Shopping product page      | `query="laptop"`                         |
+| `Target.GoogleSuggest`         | `GoogleSuggestParams`         | Google Autocomplete suggestions   | `query="coffee"`                         |
+| `Target.GoogleLens`            | `GoogleLensParams`            | Google Lens reverse image search  | `query="https://example.com/cat.jpg"`    |
+| `Target.GoogleTravelHotels`    | `GoogleTravelHotelsParams`    | Google Travel hotel listings      | `query="hotels in paris"`                |
+| `Target.GoogleTrendsExplore`   | `GoogleTrendsExploreParams`   | Google Trends explore data        | `query="coffee"`                         |
+| `Target.GoogleAds`             | `GoogleAdsParams`             | Google Ads results for a query    | `query="laptop"`                         |
+| `Target.BingSearch`            | `BingSearchParams`            | Bing Search results               | `query="electric vehicles"`              |
+| `Target.Bing`                  | `BingParams`                  | Raw Bing URL scraping             | `url="https://bing.com/search?q=laptop"` |
 
 ### eCommerce
 
-| Target | Parameter class | Description | Example input |
-| --- | --- | --- | --- |
-| `Target.AmazonProduct` | `AmazonProductParams` | Amazon product detail page by ASIN | `query="B09H74FXNW"` |
-| `Target.AmazonSearch` | `AmazonSearchParams` | Amazon search results | `query="laptop"` |
-| `Target.AmazonPricing` | `AmazonPricingParams` | Amazon pricing and offers | `query="B09H74FXNW"` |
-| `Target.AmazonSellers` | `AmazonSellersParams` | Amazon seller listings | `query="B09H74FXNW"` |
-| `Target.AmazonBestsellers` | `AmazonBestsellersParams` | Amazon bestsellers by category | `query="electronics"` |
-| `Target.WalmartProduct` | `WalmartProductParams` | Walmart product page by product ID | `product_id="15296401808"` |
-| `Target.WalmartSearch` | `WalmartSearchParams` | Walmart search results | `query="laptop"` |
-| `Target.Walmart` | `WalmartParams` | Raw Walmart URL scraping | `url="https://walmart.com/ip/15296401808"` |
-| `Target.TargetProduct` | `TargetProductParams` | Target.com product page by product ID | `product_id="92186007"` |
-| `Target.TargetSearch` | `TargetSearchParams` | Target.com search results | `query="laptop"` |
-| `Target.Target` | `TargetStoreParams` | Raw Target.com URL scraping | `url="https://target.com/p/-/A-92186007"` |
-| `Target.LowesSearch` | `LowesSearchParams` | Lowe's search results | `query="drill"` |
-| `Target.Ecommerce` | `EcommerceParams` | Generic eCommerce page with parser | `url="https://example.com/product/123"` |
+| Target                     | Parameter class           | Description                           | Example input                              |
+| -------------------------- | ------------------------- | ------------------------------------- | ------------------------------------------ |
+| `Target.AmazonProduct`     | `AmazonProductParams`     | Amazon product detail page by ASIN    | `query="B09H74FXNW"`                       |
+| `Target.AmazonSearch`      | `AmazonSearchParams`      | Amazon search results                 | `query="laptop"`                           |
+| `Target.AmazonPricing`     | `AmazonPricingParams`     | Amazon pricing and offers             | `query="B09H74FXNW"`                       |
+| `Target.AmazonSellers`     | `AmazonSellersParams`     | Amazon seller listings                | `query="B09H74FXNW"`                       |
+| `Target.AmazonBestsellers` | `AmazonBestsellersParams` | Amazon bestsellers by category        | `query="electronics"`                      |
+| `Target.WalmartProduct`    | `WalmartProductParams`    | Walmart product page by product ID    | `product_id="15296401808"`                 |
+| `Target.WalmartSearch`     | `WalmartSearchParams`     | Walmart search results                | `query="laptop"`                           |
+| `Target.Walmart`           | `WalmartParams`           | Raw Walmart URL scraping              | `url="https://walmart.com/ip/15296401808"` |
+| `Target.TargetProduct`     | `TargetProductParams`     | Target.com product page by product ID | `product_id="92186007"`                    |
+| `Target.TargetSearch`      | `TargetSearchParams`      | Target.com search results             | `query="laptop"`                           |
+| `Target.Target`            | `TargetStoreParams`       | Raw Target.com URL scraping           | `url="https://target.com/p/-/A-92186007"`  |
+| `Target.LowesSearch`       | `LowesSearchParams`       | Lowe's search results                 | `query="drill"`                            |
+| `Target.Ecommerce`         | `EcommerceParams`         | Generic eCommerce page with parser    | `url="https://example.com/product/123"`    |
 
 ### Social media
 
-| Target | Parameter class | Description | Example input |
-| --- | --- | --- | --- |
-| `Target.RedditPost` | `RedditPostParams` | Reddit post by URL | `url="https://reddit.com/r/nba/comments/..."` |
-| `Target.RedditSubreddit` | `RedditSubredditParams` | Reddit subreddit by URL | `url="https://reddit.com/r/nba/"` |
-| `Target.RedditUser` | `RedditUserParams` | Reddit user profile by URL | `url="https://reddit.com/user/example/"` |
-| `Target.YoutubeVideo` | `YoutubeVideoParams` | YouTube video by ID | `query="dFu9aKJoqGg"` |
-| `Target.YoutubeSearch` | `YoutubeSearchParams` | YouTube search results | `query="ambient music"` |
-| `Target.YoutubeSearchMax` | `YoutubeSearchMaxParams` | YouTube search results (extended) | `query="ambient music"` |
-| `Target.YoutubeMetadata` | `YoutubeMetadataParams` | YouTube video metadata by ID | `query="dFu9aKJoqGg"` |
-| `Target.YoutubeTranscript` | `YoutubeTranscriptParams` | YouTube video transcript by ID | `query="dFu9aKJoqGg"` |
-| `Target.YoutubeSubtitles` | `YoutubeSubtitlesParams` | YouTube video subtitles by ID | `query="dFu9aKJoqGg"` |
-| `Target.YoutubeChannel` | `YoutubeChannelParams` | YouTube channel by handle or ID | `query="@decodo_official"` |
-| `Target.TiktokPost` | `TiktokPostParams` | TikTok post by URL | `url="https://www.tiktok.com/@nba/video/..."` |
-| `Target.TiktokShopSearch` | `TiktokShopSearchParams` | TikTok Shop search results | `query="wireless earbuds"` |
-| `Target.TiktokShopProduct` | `TiktokShopProductParams` | TikTok Shop product page by product ID | `product_id="7100000000000000000"` |
-| `Target.Tiktok` | `TiktokParams` | Raw TikTok URL scraping | `url="https://www.tiktok.com/@nba"` |
-| `Target.InstagramGraphqlProfile` | `InstagramGraphqlProfileParams` | Instagram profile via GraphQL | `query="nba"` |
+| Target                           | Parameter class                 | Description                            | Example input                                 |
+| -------------------------------- | ------------------------------- | -------------------------------------- | --------------------------------------------- |
+| `Target.RedditPost`              | `RedditPostParams`              | Reddit post by URL                     | `url="https://reddit.com/r/nba/comments/..."` |
+| `Target.RedditSubreddit`         | `RedditSubredditParams`         | Reddit subreddit by URL                | `url="https://reddit.com/r/nba/"`             |
+| `Target.RedditUser`              | `RedditUserParams`              | Reddit user profile by URL             | `url="https://reddit.com/user/example/"`      |
+| `Target.YoutubeVideo`            | `YoutubeVideoParams`            | YouTube video by ID                    | `query="dFu9aKJoqGg"`                         |
+| `Target.YoutubeSearch`           | `YoutubeSearchParams`           | YouTube search results                 | `query="ambient music"`                       |
+| `Target.YoutubeSearchMax`        | `YoutubeSearchMaxParams`        | YouTube search results (extended)      | `query="ambient music"`                       |
+| `Target.YoutubeMetadata`         | `YoutubeMetadataParams`         | YouTube video metadata by ID           | `query="dFu9aKJoqGg"`                         |
+| `Target.YoutubeTranscript`       | `YoutubeTranscriptParams`       | YouTube video transcript by ID         | `query="dFu9aKJoqGg"`                         |
+| `Target.YoutubeSubtitles`        | `YoutubeSubtitlesParams`        | YouTube video subtitles by ID          | `query="dFu9aKJoqGg"`                         |
+| `Target.YoutubeChannel`          | `YoutubeChannelParams`          | YouTube channel by handle or ID        | `query="@decodo_official"`                    |
+| `Target.TiktokPost`              | `TiktokPostParams`              | TikTok post by URL                     | `url="https://www.tiktok.com/@nba/video/..."` |
+| `Target.TiktokShopSearch`        | `TiktokShopSearchParams`        | TikTok Shop search results             | `query="wireless earbuds"`                    |
+| `Target.TiktokShopProduct`       | `TiktokShopProductParams`       | TikTok Shop product page by product ID | `product_id="7100000000000000000"`            |
+| `Target.Tiktok`                  | `TiktokParams`                  | Raw TikTok URL scraping                | `url="https://www.tiktok.com/@nba"`           |
+| `Target.InstagramGraphqlProfile` | `InstagramGraphqlProfileParams` | Instagram profile via GraphQL          | `query="nba"`                                 |
 
 ### AI tools
 
-| Target | Parameter class | Description | Example input |
-| --- | --- | --- | --- |
-| `Target.Chatgpt` | `ChatgptParams` | ChatGPT response for a prompt | `prompt="What are the top three dog breeds?"` |
-| `Target.Perplexity` | `PerplexityParams` | Perplexity response for a prompt | `prompt="What causes seasonal allergies?"` |
-| `Target.Gemini` | `GeminiParams` | Gemini response for a prompt | `prompt="What are the top three dog breeds?"` |
-| `Target.GoogleAiMode` | `GoogleAiModeParams` | Google AI Mode response | `query="What are the top three dog breeds?"` |
+| Target                | Parameter class      | Description                      | Example input                                 |
+| --------------------- | -------------------- | -------------------------------- | --------------------------------------------- |
+| `Target.Chatgpt`      | `ChatgptParams`      | ChatGPT response for a prompt    | `prompt="What are the top three dog breeds?"` |
+| `Target.Perplexity`   | `PerplexityParams`   | Perplexity response for a prompt | `prompt="What causes seasonal allergies?"`    |
+| `Target.Gemini`       | `GeminiParams`       | Gemini response for a prompt     | `prompt="What are the top three dog breeds?"` |
+| `Target.GoogleAiMode` | `GoogleAiModeParams` | Google AI Mode response          | `query="What are the top three dog breeds?"`  |
 
 ### Other
 
-| Target | Parameter class | Description | Example input |
-| --- | --- | --- | --- |
-| `Target.Bbb` | `BbbParams` | Better Business Bureau listing by URL | `url="https://bbb.org/us/ny/new-york/..."` |
-| `Target.Autotrader` | `AutotraderParams` | Autotrader listing by URL | `url="https://autotrader.com/cars-for-sale/..."` |
-| `Target.Mobile` | `MobileParams` | Mobile.de listing by URL | `url="https://mobile.de/auto/..."` |
-| `Target.Airbnb` | `AirbnbParams` | Airbnb listing by URL | `url="https://airbnb.com/rooms/12345"` |
-| `Target.AppleAppStore` | `AppleAppStoreParams` | Apple App Store app by URL | `url="https://apps.apple.com/app/id12345"` |
+| Target                 | Parameter class       | Description                           | Example input                                    |
+| ---------------------- | --------------------- | ------------------------------------- | ------------------------------------------------ |
+| `Target.Bbb`           | `BbbParams`           | Better Business Bureau listing by URL | `url="https://bbb.org/us/ny/new-york/..."`       |
+| `Target.Autotrader`    | `AutotraderParams`    | Autotrader listing by URL             | `url="https://autotrader.com/cars-for-sale/..."` |
+| `Target.Mobile`        | `MobileParams`        | Mobile.de listing by URL              | `url="https://mobile.de/auto/..."`               |
+| `Target.Airbnb`        | `AirbnbParams`        | Airbnb listing by URL                 | `url="https://airbnb.com/rooms/12345"`           |
+| `Target.AppleAppStore` | `AppleAppStoreParams` | Apple App Store app by URL            | `url="https://apps.apple.com/app/id12345"`       |
 
 ### Universal scraping
 
-| Target | Parameter class | Description | Example input |
-| --- | --- | --- | --- |
-| `Target.Universal` | `UniversalParams` | Any URL via the universal scraper | `url="https://example.com"` |
-| `Target.Google` | `GoogleParams` | Raw Google URL scraping | `url="https://google.com/search?q=laptop"` |
-| `Target.Amazon` | `AmazonParams` | Raw Amazon URL scraping | `url="https://amazon.com/dp/B09H74FXNW"` |
-
+| Target             | Parameter class   | Description                       | Example input                              |
+| ------------------ | ----------------- | --------------------------------- | ------------------------------------------ |
+| `Target.Universal` | `UniversalParams` | Any URL via the universal scraper | `url="https://example.com"`                |
+| `Target.Google`    | `GoogleParams`    | Raw Google URL scraping           | `url="https://google.com/search?q=laptop"` |
+| `Target.Amazon`    | `AmazonParams`    | Raw Amazon URL scraping           | `url="https://amazon.com/dp/B09H74FXNW"`   |
 
 > `Target.UniversalEcommerce` isn't listed above because it doesn't accept a primary input parameter like `url`, `query`, `product_id`, or `prompt`. Its parameter class `UniversalEcommerceParams` only accepts optional configuration fields such as `callback_url`.
 
@@ -593,13 +701,15 @@ except DecodoError as err:
 
 The `["results"]["results"]` nesting above is the shape returned when `parse=True`. Without it, `content` holds the raw page instead.
 
-| Error | Raised when | Useful attributes |
-| --- | --- | --- |
-| `AuthenticationError` | The API returns `401` or `403` | `status_code` |
-| `RateLimitError` | The API returns `429` | `status_code` |
-| `ValidationError` | The payload fails local schema validation, or the API returns `422` | `errors`, `status_code` |
-| `TimeoutError` | The request exceeds `timeout_ms` | none |
-| `DecodoError` | Any other unsuccessful response. Base class for the three errors above | `status_code`, `api_status` |
+| Error                 | Raised when                                                                          | Useful attributes              |
+| --------------------- | ------------------------------------------------------------------------------------ | ------------------------------ |
+| `AuthenticationError` | The API returns `401` or `403`                                                       | `status_code`                  |
+| `RateLimitError`      | The API returns `429`                                                                | `status_code`                  |
+| `ValidationError`     | The payload fails local schema validation, or the API returns `422`                  | `errors`, `status_code`        |
+| `TimeoutError`        | The request exceeds `timeout_ms`                                                     | none                           |
+| `CrawlTimeoutError`   | `crawl()` exceeds its `timeout`. Subclass of `TimeoutError`; the crawl keeps running | `crawl_id`                     |
+| `CrawlError`          | `crawl()` ends `faulted` or `cancelled`. Subclass of `DecodoError`                   | `crawl_id`, `status`, `reason` |
+| `DecodoError`         | Any other unsuccessful response. Base class for the three errors above               | `status_code`, `api_status`    |
 
 Two things to keep in mind:
 

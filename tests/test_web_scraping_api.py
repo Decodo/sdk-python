@@ -36,6 +36,9 @@ class _StrictSchema:
     def get_shared_parameters(self) -> dict[str, Any]:
         return {}
 
+    def get_endpoint_request_schema(self, endpoint: str) -> dict[str, Any] | None:
+        return None
+
     @property
     def version(self) -> str | None:
         return None
