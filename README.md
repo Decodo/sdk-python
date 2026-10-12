@@ -464,6 +464,7 @@ for link in result["results"][0]["content"]["links"]:
 ```python
 from decodo import (
     CrawlError,
+    CrawlInterruptedError,
     CrawlRequest,
     CrawlTimeoutError,
     DecodoClient,

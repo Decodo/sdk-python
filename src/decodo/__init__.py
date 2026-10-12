@@ -3,6 +3,7 @@ from .client import DecodoClient, DecodoConfig, WebScrapingApiConfig
 from .errors import (
     AuthenticationError,
     CrawlError,
+    CrawlInterruptedError,
     CrawlTimeoutError,
     DecodoError,
     RateLimitError,
@@ -312,6 +313,7 @@ __all__ = [
     "ValidationError",
     "TimeoutError",
     "CrawlError",
+    "CrawlInterruptedError",
     "CrawlTimeoutError",
 ]
 

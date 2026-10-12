@@ -195,7 +195,9 @@ class WebScrapingApi:
         maximum number of seconds to wait; ``None`` waits until the server settles the
         crawl, which it does after the request's ``max_duration``. On timeout raises
         ``CrawlTimeoutError`` carrying the ``crawl_id``; the crawl keeps running.
-        Raises ``CrawlError`` if the crawl ends ``faulted`` or ``cancelled``.
+        Raises ``CrawlError`` if the crawl ends ``faulted`` or ``cancelled``, and
+        ``CrawlInterruptedError`` (also carrying ``crawl_id``) if a status or results
+        request fails after the crawl was started.
         """
         if poll_interval <= 0:
             raise ValueError("poll_interval must be a positive number of seconds.")
@@ -204,15 +206,24 @@ class WebScrapingApi:
         crawl_id = self.start_crawl(params)["crawl_id"]
         started = time.monotonic()
 
-        while True:
-            status = self.get_crawl_status(crawl_id)
-            state = status.get("status")
-            if state in _CRAWL_TERMINAL:
-                break
-            if timeout is not None and time.monotonic() - started >= timeout:
-                raise decodo.errors.CrawlTimeoutError(crawl_id, timeout)
-            time.sleep(poll_interval)
+        try:
+            while True:
+                status = self.get_crawl_status(crawl_id)
+                state = status.get("status")
+                if state in _CRAWL_TERMINAL:
+                    break
+                if timeout is None:
+                    time.sleep(poll_interval)
+                    continue
+                remaining = timeout - (time.monotonic() - started)
+                if remaining <= 0:
+                    raise decodo.errors.CrawlTimeoutError(crawl_id, timeout)
+                time.sleep(min(poll_interval, remaining))
 
-        if state in _CRAWL_FAILED:
-            raise decodo.errors.CrawlError(crawl_id, cast(str, state), status.get("reason"))
-        return self.get_crawl_results(crawl_id)
+            if state in _CRAWL_FAILED:
+                raise decodo.errors.CrawlError(crawl_id, cast(str, state), status.get("reason"))
+            return self.get_crawl_results(crawl_id)
+        except (decodo.errors.DecodoError, decodo.errors.TimeoutError) as err:
+            if isinstance(err, (decodo.errors.CrawlError, decodo.errors.CrawlTimeoutError)):
+                raise
+            raise decodo.errors.CrawlInterruptedError(crawl_id, err) from err

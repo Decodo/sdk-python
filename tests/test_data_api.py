@@ -6,7 +6,15 @@ from unittest.mock import MagicMock, call, patch
 import pytest
 
 from decodo.api.web_scraping_api import DATA_API_ROUTES, SCRAPER_API_ROUTES, WebScrapingApi
-from decodo.errors import CrawlError, CrawlTimeoutError, DecodoError, TimeoutError, ValidationError
+from decodo.errors import (
+    CrawlError,
+    CrawlInterruptedError,
+    CrawlTimeoutError,
+    DecodoError,
+    RateLimitError,
+    TimeoutError,
+    ValidationError,
+)
 from decodo.schema.bundled_schema import BundledSchema
 from decodo.schema.types import TargetMeta
 
@@ -311,7 +319,94 @@ class TestPublicExports:
             "CrawlPage",
             "CrawlPagesResponse",
             "CrawlError",
+            "CrawlInterruptedError",
             "CrawlTimeoutError",
         ]:
             assert name in decodo.__all__, name
             getattr(decodo, name)
+
+
+class TestCrawlTimeoutPrecision:
+    def test_raises_at_the_timeout_not_a_poll_interval_later(self) -> None:
+        api, http = _data_api()
+        http.post.return_value = {"crawl_id": "crawl-1", "status": "pending"}
+        http.get.return_value = {"crawl_id": "crawl-1", "status": "pending"}
+
+        with patch("decodo.api.web_scraping_api.time") as fake_time:
+            fake_time.monotonic.side_effect = [0.0, 0.0, 1.0]
+            with pytest.raises(CrawlTimeoutError):
+                api.crawl({"url": "https://example.com"}, poll_interval=4, timeout=1)
+
+        assert fake_time.sleep.call_args_list == [call(1.0)]
+
+    def test_sleeps_the_full_interval_while_more_than_an_interval_remains(self) -> None:
+        api, http = _data_api()
+        http.post.return_value = {"crawl_id": "crawl-1", "status": "pending"}
+        http.get.side_effect = [
+            {"crawl_id": "crawl-1", "status": "pending"},
+            {"crawl_id": "crawl-1", "status": "pending"},
+            {"crawl_id": "crawl-1", "status": "done"},
+            {"crawl_id": "crawl-1", "url": []},
+        ]
+
+        with patch("decodo.api.web_scraping_api.time") as fake_time:
+            fake_time.monotonic.side_effect = [0.0, 0.0, 3.0, 6.0]
+            api.crawl({"url": "https://example.com"}, poll_interval=3, timeout=10)
+
+        assert fake_time.sleep.call_args_list == [call(3), call(3)]
+
+
+class TestCrawlInterrupted:
+    """Requests made after the crawl started that fail must still name the crawl."""
+
+    def _started_api(self) -> tuple[WebScrapingApi, MagicMock]:
+        api, http = _data_api()
+        http.post.return_value = {"crawl_id": "crawl-1", "status": "pending"}
+        return api, http
+
+    def test_status_error_raises_crawl_interrupted_error_naming_the_crawl(self) -> None:
+        api, http = self._started_api()
+        original = DecodoError("service unavailable", 503, "failed")
+        http.get.side_effect = original
+
+        with pytest.raises(CrawlInterruptedError, match="crawl-1") as exc_info:
+            api.crawl({"url": "https://example.com"})
+
+        err = exc_info.value
+        assert isinstance(err, DecodoError)
+        assert err.crawl_id == "crawl-1"
+        assert err.status_code == 503
+        assert err.__cause__ is original
+        assert "service unavailable" in str(err)
+        assert [c.args[0] for c in http.post.call_args_list] == ["/v1/crawl"]
+
+    def test_request_timeout_while_polling_is_wrapped_too(self) -> None:
+        api, http = self._started_api()
+        http.get.side_effect = TimeoutError("Request to /v1/crawl/crawl-1/status timed out after 180000ms")
+
+        with pytest.raises(CrawlInterruptedError) as exc_info:
+            api.crawl({"url": "https://example.com"})
+
+        assert exc_info.value.crawl_id == "crawl-1"
+        assert isinstance(exc_info.value.__cause__, TimeoutError)
+
+    def test_results_fetch_error_after_done_is_wrapped_too(self) -> None:
+        api, http = self._started_api()
+        http.get.side_effect = [
+            {"crawl_id": "crawl-1", "status": "done"},
+            RateLimitError("results read limit reached, retry in 1s"),
+        ]
+
+        with pytest.raises(CrawlInterruptedError) as exc_info:
+            api.crawl({"url": "https://example.com"})
+
+        assert exc_info.value.crawl_id == "crawl-1"
+        assert exc_info.value.status_code == 429
+        assert isinstance(exc_info.value.__cause__, RateLimitError)
+
+    def test_start_failure_is_not_wrapped_because_there_is_no_crawl_yet(self) -> None:
+        api, http = _data_api()
+        http.post.side_effect = RateLimitError("crawl creation limit reached")
+
+        with pytest.raises(RateLimitError):
+            api.crawl({"url": "https://example.com"})

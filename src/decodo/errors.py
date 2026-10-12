@@ -63,3 +63,26 @@ class CrawlTimeoutError(TimeoutError):
             "or stop it with cancel_crawl."
         )
         self.crawl_id = crawl_id
+
+
+class CrawlInterruptedError(DecodoError):
+    """Raised by ``crawl()`` when a request made after the crawl started fails.
+
+    Covers status polling and the results fetch. The crawl itself was not
+    cancelled and keeps running or stays available on the server; use
+    ``crawl_id`` with ``get_crawl_status``, ``get_crawl_results`` or
+    ``cancel_crawl``. The original error is ``__cause__``.
+    """
+
+    crawl_id: str
+
+    def __init__(self, crawl_id: str, cause: Exception) -> None:
+        status_code = getattr(cause, "status_code", 0)
+        api_status = getattr(cause, "api_status", None)
+        super().__init__(
+            f"Crawl {crawl_id} was started but a later request failed: {cause}. "
+            "The crawl was not cancelled; use the crawl id to check, fetch or cancel it.",
+            status_code,
+            api_status,
+        )
+        self.crawl_id = crawl_id
