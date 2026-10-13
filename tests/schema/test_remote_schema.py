@@ -204,3 +204,20 @@ class TestRemoteSchemaLoad:
 
             assert call_count == 1
             assert schema.version == "9.9.9"
+
+
+class TestRemoteSchemaDataApi:
+    def test_exposes_data_api_endpoint_request_schemas(self) -> None:
+        schema = RemoteSchema(_MINIMAL_IR, {})
+
+        assert schema.get_endpoint_request_schema("mapSite") == {
+            "type": "object",
+            "required": ["url"],
+            "properties": {"url": {"type": "string"}, "limit": {"type": "integer"}},
+        }
+
+    def test_returns_none_when_the_ir_predates_the_data_api_section(self) -> None:
+        ir: Any = {"version": "0.9.0", "apis": {"webScrapingApi": _MINIMAL_IR["apis"]["webScrapingApi"]}}
+        schema = RemoteSchema(ir, {})
+
+        assert schema.get_endpoint_request_schema("runSearch") is None

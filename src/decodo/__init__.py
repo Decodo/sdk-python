@@ -2,6 +2,9 @@ from .api.web_scraping_api import WebScrapingApi, WebScrapingApiRoutes
 from .client import DecodoClient, DecodoConfig, WebScrapingApiConfig
 from .errors import (
     AuthenticationError,
+    CrawlError,
+    CrawlInterruptedError,
+    CrawlTimeoutError,
     DecodoError,
     RateLimitError,
     TimeoutError,
@@ -11,6 +14,18 @@ from .schema.bundled_schema import BundledSchema
 from .schema.remote_schema import RemoteSchema
 from .schema.types import DecodoSchema, RemoteSchemaLoadOptions
 from .targets import Target, targets
+from .types.data_api import (
+    CrawlPage,
+    CrawlPagesResponse,
+    CrawlRequest,
+    CrawlResponse,
+    CrawlStatus,
+    CrawlStatusResponse,
+    MapRequest,
+    MapResponse,
+    SearchRequest,
+    SearchResponse,
+)
 from .types.responses import (
     AsyncTaskResponse,
     BatchResponse,
@@ -282,11 +297,24 @@ __all__ = [
     "TaskResultsResponse",
     "TaskStatus",
     "ResultEntry",
+    "SearchRequest",
+    "SearchResponse",
+    "MapRequest",
+    "MapResponse",
+    "CrawlRequest",
+    "CrawlResponse",
+    "CrawlStatusResponse",
+    "CrawlStatus",
+    "CrawlPage",
+    "CrawlPagesResponse",
     "DecodoError",
     "AuthenticationError",
     "RateLimitError",
     "ValidationError",
     "TimeoutError",
+    "CrawlError",
+    "CrawlInterruptedError",
+    "CrawlTimeoutError",
 ]
 
 if _codegen_available:

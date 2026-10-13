@@ -45,3 +45,13 @@ class TestBundledSchemaShared:
 
     def test_returns_empty_shared_parameters(self) -> None:
         assert self.schema.get_shared_parameters() == {}
+
+    def test_returns_data_api_endpoint_request_schemas(self) -> None:
+        schema = self.schema.get_endpoint_request_schema("runSearch")
+
+        assert schema is not None
+        assert schema["required"] == ["query"]
+
+    def test_returns_none_for_endpoints_without_a_request_schema(self) -> None:
+        assert self.schema.get_endpoint_request_schema("getCrawlStatus") is None
+        assert self.schema.get_endpoint_request_schema("noSuchEndpoint") is None

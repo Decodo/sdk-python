@@ -17,6 +17,7 @@ from .types import (
     RemoteIr,
     RemoteSchemaLoadOptions,
     TargetMeta,
+    build_endpoint_request_schemas,
 )
 
 
@@ -104,6 +105,7 @@ class RemoteSchema:
         }
         self._shared_parameters: dict[str, Any] = ir["apis"]["webScrapingApi"].get("parameters") or {}
         self._target_keys = list(ir["apis"]["webScrapingApi"]["targets"].keys())
+        self._endpoint_schemas = build_endpoint_request_schemas(ir)
 
     @classmethod
     def load(cls, options: RemoteSchemaLoadOptions | None = None) -> RemoteSchema:
@@ -126,6 +128,9 @@ class RemoteSchema:
 
     def get_shared_parameters(self) -> dict[str, Any]:
         return self._shared_parameters
+
+    def get_endpoint_request_schema(self, endpoint: str) -> dict[str, Any] | None:
+        return self._endpoint_schemas.get(endpoint)
 
     @property
     def version(self) -> str | None:

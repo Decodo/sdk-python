@@ -2,6 +2,18 @@ try:
     from .requests import BatchRequest, ScrapeRequest
 except ImportError:
     pass
+from .data_api import (
+    CrawlPage,
+    CrawlPagesResponse,
+    CrawlRequest,
+    CrawlResponse,
+    CrawlStatus,
+    CrawlStatusResponse,
+    MapRequest,
+    MapResponse,
+    SearchRequest,
+    SearchResponse,
+)
 from .responses import (
     AsyncTaskResponse,
     BatchResponse,
@@ -24,4 +36,14 @@ __all__ = [
     "TaskMetadata",
     "TaskResultsResponse",
     "ErrorResponse",
+    "SearchRequest",
+    "SearchResponse",
+    "MapRequest",
+    "MapResponse",
+    "CrawlRequest",
+    "CrawlResponse",
+    "CrawlStatusResponse",
+    "CrawlStatus",
+    "CrawlPage",
+    "CrawlPagesResponse",
 ]

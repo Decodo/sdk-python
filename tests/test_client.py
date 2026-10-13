@@ -77,3 +77,32 @@ class TestTransportSelection:
             "https://scraper-api.decodo.com/v2/scrape",
             "https://scraper-api.decodo.com/v3/task/task-1",
         ]
+
+
+class TestDataApiAccess:
+    def test_data_api_methods_require_an_api_key(self) -> None:
+        client = DecodoClient(DecodoConfig(web_scraping_api=WebScrapingApiConfig(token="test-token")))
+
+        with pytest.raises(ValueError, match="search requires an API key"):
+            client.web_scraping_api.search({"query": "coffee"})
+        with pytest.raises(ValueError, match="crawl requires an API key"):
+            client.web_scraping_api.crawl({"url": "https://example.com"})
+
+    def test_data_api_methods_route_to_data_decodo_com(self) -> None:
+        urls: list[str] = []
+
+        def fake_request(method: str, url: str, **kwargs: Any) -> MagicMock:
+            urls.append(f"{method} {url}")
+            return _make_response({"results": [], "url": [], "status": "done", "crawl_id": "c1"})
+
+        with patch("httpx.request", side_effect=fake_request):
+            client = DecodoClient(DecodoConfig(web_scraping_api=WebScrapingApiConfig(api_key="test-key")))
+            client.web_scraping_api.search({"query": "coffee"})
+            client.web_scraping_api.map({"url": "https://example.com"})
+            client.web_scraping_api.get_crawl_results("c1", content=False)
+
+        assert urls == [
+            "POST https://data.decodo.com/v1/search",
+            "POST https://data.decodo.com/v1/map",
+            "GET https://data.decodo.com/v1/crawl/c1",
+        ]

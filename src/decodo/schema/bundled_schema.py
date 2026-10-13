@@ -9,7 +9,7 @@ from typing import Any, ClassVar, cast
 from decodo.targets import targets
 
 from .build_target_meta import build_target_meta
-from .types import DecodoSchema, TargetMeta
+from .types import DecodoSchema, RemoteIr, TargetMeta, build_endpoint_request_schemas
 
 
 def _load_target_meta() -> dict[str, Any] | None:
@@ -60,6 +60,7 @@ class BundledSchema:
                 k: v["parameter_schema"] for k, v in api_targets.items()
             }
             self._target_meta = _target_meta if _target_meta is not None else build_target_meta(api_targets)
+            self._endpoint_schemas = build_endpoint_request_schemas(cast(RemoteIr, ir))
         else:
             warnings.warn(
                 "Decodo IR schema not found — payload validation is disabled. "
@@ -70,6 +71,7 @@ class BundledSchema:
             )
             self._request_schemas = {}
             self._target_meta = _target_meta or {}
+            self._endpoint_schemas = {}
 
     def get_request_schema(self, target: str) -> dict[str, Any] | None:
         return self._request_schemas.get(target)
@@ -85,6 +87,9 @@ class BundledSchema:
 
     def get_shared_parameters(self) -> dict[str, Any]:
         return {}
+
+    def get_endpoint_request_schema(self, endpoint: str) -> dict[str, Any] | None:
+        return self._endpoint_schemas.get(endpoint)
 
     @property
     def version(self) -> str | None:
