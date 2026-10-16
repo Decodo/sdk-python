@@ -1,6 +1,6 @@
 [project]
 name = "decodo-sdk"
-version = "2.4.0"
+version = "0.0.0"
 description = "Official Python SDK for the Decodo APIs"
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -65,3 +65,9 @@ ignore_errors = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
+[tool.semantic_release]
+version_toml = ["pyproject.toml:project.version"]
+commit_parser = "conventional"
+
+[tool.semantic_release.branches.main]
+match = "main"
