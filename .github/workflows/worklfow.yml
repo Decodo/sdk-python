@@ -1,37 +1,71 @@
-name: Publish Python SDK to PyPI
+name: Release
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
 
 jobs:
-  publish:
+  release:
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
+      contents: write
       id-token: write
-      contents: read
-    steps:
-      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Reset to the workflow commit
+        run: git reset --hard ${{ github.sha }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
+      - name: Install dependencies
+        run: pip install -e ".[dev]" httpx types-jsonschema
+
+      - name: Ruff
+        run: ruff check .
+
+      - name: Mypy
+        run: mypy .
+
       - name: Generate types
-        run: |
-          pip install httpx pydantic jsonschema
-          pip install -e .
-          python -m decodo.codegen.codegen
+        run: python -m decodo.codegen.codegen
+
+      - name: Pytest
+        run: pytest
+
+      - name: Release
+        id: release
+        uses: python-semantic-release/python-semantic-release@v10.7.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          commit: "false"
+          changelog: "false"
 
       - name: Build
+        if: steps.release.outputs.released == 'true'
         run: |
           pip install build
           python -m build
 
-      - name: Publish
+      - name: Publish to PyPI
+        if: steps.release.outputs.released == 'true'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: dist/
