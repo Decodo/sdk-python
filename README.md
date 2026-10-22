@@ -545,13 +545,8 @@ Each target accepts one primary input parameter (`url`, `query`, `product_id`, o
 | Target                         | Parameter class               | Description                       | Example input                            |
 | ------------------------------ | ----------------------------- | --------------------------------- | ---------------------------------------- |
 | `Target.GoogleSearch`          | `GoogleSearchParams`          | Google Search results for a query | `query="coffee shops"`                   |
-| `Target.GoogleMaps`            | `GoogleMapsParams`            | Google Maps search results        | `query="coffee shops brooklyn"`          |
-| `Target.GoogleShoppingSearch`  | `GoogleShoppingSearchParams`  | Google Shopping search results    | `query="laptop"`                         |
-| `Target.GoogleShoppingProduct` | `GoogleShoppingProductParams` | Google Shopping product page      | `query="laptop"`                         |
-| `Target.GoogleSuggest`         | `GoogleSuggestParams`         | Google Autocomplete suggestions   | `query="coffee"`                         |
 | `Target.GoogleLens`            | `GoogleLensParams`            | Google Lens reverse image search  | `query="https://example.com/cat.jpg"`    |
 | `Target.GoogleTravelHotels`    | `GoogleTravelHotelsParams`    | Google Travel hotel listings      | `query="hotels in paris"`                |
-| `Target.GoogleTrendsExplore`   | `GoogleTrendsExploreParams`   | Google Trends explore data        | `query="coffee"`                         |
 | `Target.GoogleAds`             | `GoogleAdsParams`             | Google Ads results for a query    | `query="laptop"`                         |
 | `Target.BingSearch`            | `BingSearchParams`            | Bing Search results               | `query="electric vehicles"`              |
 | `Target.Bing`                  | `BingParams`                  | Raw Bing URL scraping             | `url="https://bing.com/search?q=laptop"` |
@@ -571,8 +566,6 @@ Each target accepts one primary input parameter (`url`, `query`, `product_id`, o
 | `Target.TargetProduct`     | `TargetProductParams`     | Target.com product page by product ID | `product_id="92186007"`                    |
 | `Target.TargetSearch`      | `TargetSearchParams`      | Target.com search results             | `query="laptop"`                           |
 | `Target.Target`            | `TargetStoreParams`       | Raw Target.com URL scraping           | `url="https://target.com/p/-/A-92186007"`  |
-| `Target.LowesSearch`       | `LowesSearchParams`       | Lowe's search results                 | `query="drill"`                            |
-| `Target.Ecommerce`         | `EcommerceParams`         | Generic eCommerce page with parser    | `url="https://example.com/product/123"`    |
 
 ### Social media
 
@@ -581,18 +574,14 @@ Each target accepts one primary input parameter (`url`, `query`, `product_id`, o
 | `Target.RedditPost`              | `RedditPostParams`              | Reddit post by URL                     | `url="https://reddit.com/r/nba/comments/..."` |
 | `Target.RedditSubreddit`         | `RedditSubredditParams`         | Reddit subreddit by URL                | `url="https://reddit.com/r/nba/"`             |
 | `Target.RedditUser`              | `RedditUserParams`              | Reddit user profile by URL             | `url="https://reddit.com/user/example/"`      |
-| `Target.YoutubeVideo`            | `YoutubeVideoParams`            | YouTube video by ID                    | `query="dFu9aKJoqGg"`                         |
 | `Target.YoutubeSearch`           | `YoutubeSearchParams`           | YouTube search results                 | `query="ambient music"`                       |
-| `Target.YoutubeSearchMax`        | `YoutubeSearchMaxParams`        | YouTube search results (extended)      | `query="ambient music"`                       |
 | `Target.YoutubeMetadata`         | `YoutubeMetadataParams`         | YouTube video metadata by ID           | `query="dFu9aKJoqGg"`                         |
-| `Target.YoutubeTranscript`       | `YoutubeTranscriptParams`       | YouTube video transcript by ID         | `query="dFu9aKJoqGg"`                         |
 | `Target.YoutubeSubtitles`        | `YoutubeSubtitlesParams`        | YouTube video subtitles by ID          | `query="dFu9aKJoqGg"`                         |
 | `Target.YoutubeChannel`          | `YoutubeChannelParams`          | YouTube channel by handle or ID        | `query="@decodo_official"`                    |
 | `Target.TiktokPost`              | `TiktokPostParams`              | TikTok post by URL                     | `url="https://www.tiktok.com/@nba/video/..."` |
 | `Target.TiktokShopSearch`        | `TiktokShopSearchParams`        | TikTok Shop search results             | `query="wireless earbuds"`                    |
 | `Target.TiktokShopProduct`       | `TiktokShopProductParams`       | TikTok Shop product page by product ID | `product_id="7100000000000000000"`            |
 | `Target.Tiktok`                  | `TiktokParams`                  | Raw TikTok URL scraping                | `url="https://www.tiktok.com/@nba"`           |
-| `Target.InstagramGraphqlProfile` | `InstagramGraphqlProfileParams` | Instagram profile via GraphQL          | `query="nba"`                                 |
 
 ### AI tools
 
@@ -620,8 +609,6 @@ Each target accepts one primary input parameter (`url`, `query`, `product_id`, o
 | `Target.Universal` | `UniversalParams` | Any URL via the universal scraper | `url="https://example.com"`                |
 | `Target.Google`    | `GoogleParams`    | Raw Google URL scraping           | `url="https://google.com/search?q=laptop"` |
 | `Target.Amazon`    | `AmazonParams`    | Raw Amazon URL scraping           | `url="https://amazon.com/dp/B09H74FXNW"`   |
-
-> `Target.UniversalEcommerce` isn't listed above because it doesn't accept a primary input parameter like `url`, `query`, `product_id`, or `prompt`. Its parameter class `UniversalEcommerceParams` only accepts optional configuration fields such as `callback_url`.
 
 For the full target list and parameter details, see the API documentation:
 

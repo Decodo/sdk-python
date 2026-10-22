@@ -191,6 +191,19 @@ def _get_targets_file_contents(api: WebScrapingApiIR) -> str:
     lines.append("]")
     lines.append("")
 
+    exported = [
+        *(_class_name(k) for k in target_keys),
+        *(_batch_class_name(k) for k in target_keys),
+        "ScrapeRequest",
+        "BatchRequest",
+        "target_meta",
+    ]
+    lines.append("__all__ = [")
+    for name in exported:
+        lines.append(f"    {json.dumps(name)},")
+    lines.append("]")
+    lines.append("")
+
     return "\n".join(lines)
 
 
