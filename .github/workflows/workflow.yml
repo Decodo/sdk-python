@@ -64,6 +64,13 @@ jobs:
           pip install build
           python -m build
 
+      - name: Import typed params from the wheel
+        if: steps.release.outputs.released == 'true'
+        run: |
+          python -m venv /tmp/wheel-env
+          /tmp/wheel-env/bin/pip install dist/*.whl
+          cd /tmp && /tmp/wheel-env/bin/python -c "import decodo; assert decodo._codegen_available; from decodo import ScrapeRequest"
+
       - name: Publish to PyPI
         if: steps.release.outputs.released == 'true'
         uses: pypa/gh-action-pypi-publish@release/v1
