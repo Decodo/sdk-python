@@ -2,7 +2,7 @@
 # Run `python -m decodo.codegen.codegen` to regenerate when the IR schema changes.
 from __future__ import annotations
 
-from enum import StrEnum
+from decodo._compat import StrEnum
 
 
 class Target(StrEnum):

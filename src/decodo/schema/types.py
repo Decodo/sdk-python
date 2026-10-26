@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from typing import Any, Protocol, Required, TypedDict
+from typing import Any, Protocol
+
+from typing_extensions import Required, TypedDict
 
 
 class TargetMeta(TypedDict):
