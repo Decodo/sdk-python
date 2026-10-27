@@ -1,6 +1,6 @@
 # Decodo Python SDK
 
-![Python](https://img.shields.io/badge/python-%3E%3D3.12-green)
+![Python](https://img.shields.io/badge/python-%3E%3D3.10-green)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
 [![](https://dcbadge.limes.pink/api/server/https://discord.gg/Ja8dqKgvbZ)](https://discord.gg/Ja8dqKgvbZ)
@@ -14,7 +14,7 @@ Build scraping workflows for search engines, eCommerce platforms, social media, 
 
 - Fully typed targets and parameters with IDE autocomplete
 - Sync, async, and batch scraping methods
-- Built on `httpx`, Python 3.12+
+- Built on `httpx`, Python 3.10+
 - Typed error hierarchy for safer integrations
 - Built for Python and modern tooling
 
@@ -34,7 +34,7 @@ Instead of manually constructing HTTP requests and validating payloads, you can 
 
 ## Requirements
 
-- Python 3.12+
+- Python 3.10+
 
 ## Installation
 

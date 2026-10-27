@@ -58,7 +58,7 @@ def _get_targets_enum_file_contents(api: WebScrapingApiIR) -> str:
     lines.append("# Run `python -m decodo.codegen.codegen` to regenerate when the IR schema changes.")
     lines.append("from __future__ import annotations")
     lines.append("")
-    lines.append("from enum import StrEnum")
+    lines.append("from decodo._compat import StrEnum")
     lines.append("")
     lines.append("")
 
