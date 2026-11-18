@@ -3,21 +3,24 @@ from __future__ import annotations
 import json
 import os
 import time
+import warnings
 from typing import Any, cast
 
 import httpx
 
 from .build_target_meta import build_target_meta
-from .constants import DEFAULT_IR_CACHE_PATH
+from .constants import DEFAULT_IR_BASE, DEFAULT_IR_CACHE_PATH, DEFAULT_IR_PREFIX
 from .expand_path import expand_path
 from .resolve_latest_ir import resolve_latest_ir
 from .types import (
     CachedIr,
     DecodoSchema,
+    IrEndpoint,
     RemoteIr,
     RemoteSchemaLoadOptions,
     TargetMeta,
     build_endpoint_request_schemas,
+    ir_section,
 )
 
 
@@ -61,6 +64,34 @@ def _resolve_ir_url(
 def _load_ir(options: RemoteSchemaLoadOptions) -> RemoteIr:
     cache_path = expand_path(options.get("cache_path") or DEFAULT_IR_CACHE_PATH)
     cached = _read_cached_ir(cache_path)
+    ttl_ms = options.get("ttl_ms")
+    usable = cached if cached is not None and _is_cache_of(cached, options.get("url")) else None
+
+    if usable is not None and ttl_ms is not None and _is_cache_fresh(usable, ttl_ms):
+        return usable["ir"]
+
+    try:
+        return _refresh_ir(options, cache_path, cached)
+    except (httpx.HTTPError, RuntimeError, ValueError) as error:
+        if usable is None:
+            raise
+        warnings.warn(
+            f"Could not refresh the Decodo IR ({type(error).__name__}); using the cached copy.",
+            RuntimeWarning,
+            stacklevel=3,
+        )
+        return usable["ir"]
+
+
+def _is_cache_of(cached: CachedIr, url: str | None) -> bool:
+    """Whether the cache holds what was asked for: that URL, or a published IR when no URL is given."""
+    resolved_url = cached.get("resolved_url") or ""
+    if url:
+        return resolved_url == url
+    return resolved_url.startswith(f"{DEFAULT_IR_BASE}/{DEFAULT_IR_PREFIX}")
+
+
+def _refresh_ir(options: RemoteSchemaLoadOptions, cache_path: str, cached: CachedIr | None) -> RemoteIr:
     resolved_url, resolved_version = _resolve_ir_url(options)
     ttl_ms = options.get("ttl_ms")
 
@@ -69,6 +100,7 @@ def _load_ir(options: RemoteSchemaLoadOptions) -> RemoteIr:
             return cached["ir"]
 
         if options.get("url") or cached["ir"].get("version") == resolved_version:
+            _write_cached_ir(cache_path, CachedIr(**{**cached, "fetched_at": int(time.time() * 1000)}))
             return cached["ir"]
 
     ir = _fetch_ir(resolved_url)
@@ -106,6 +138,11 @@ class RemoteSchema:
         self._shared_parameters: dict[str, Any] = ir["apis"]["webScrapingApi"].get("parameters") or {}
         self._target_keys = list(ir["apis"]["webScrapingApi"]["targets"].keys())
         self._endpoint_schemas = build_endpoint_request_schemas(ir)
+        self._operations = ir_section(ir, "operations")
+        self._flows = ir_section(ir, "flows")
+        self._surfaces = ir_section(ir, "surfaces")
+        key_check = ir.get("keyCheck")
+        self._key_check: dict[str, Any] | None = key_check if isinstance(key_check, dict) else None
 
     @classmethod
     def load(cls, options: RemoteSchemaLoadOptions | None = None) -> RemoteSchema:
@@ -131,6 +168,18 @@ class RemoteSchema:
 
     def get_endpoint_request_schema(self, endpoint: str) -> dict[str, Any] | None:
         return self._endpoint_schemas.get(endpoint)
+
+    def get_flow(self, flow: str) -> dict[str, Any] | None:
+        return self._flows.get(flow)
+
+    def get_operation(self, operation: str) -> IrEndpoint | None:
+        return cast(IrEndpoint | None, self._operations.get(operation))
+
+    def get_key_check(self) -> dict[str, Any] | None:
+        return self._key_check
+
+    def get_surface(self, client: str) -> dict[str, Any] | None:
+        return self._surfaces.get(client)
 
     @property
     def version(self) -> str | None:
