@@ -20,7 +20,6 @@ from decodo.errors import (
 from decodo.schema.bundled_schema import BundledSchema
 from decodo.schema.remote_schema import RemoteSchema
 
-# Cut from the IR built for version 2.6.0: the real endpoints, flows and surfaces.
 IR = json.loads((Path(__file__).parent / "schema" / "fixtures" / "flows_ir.json").read_text(encoding="utf-8"))
 
 

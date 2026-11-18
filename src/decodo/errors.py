@@ -37,7 +37,6 @@ class TimeoutError(Exception):
 
 
 class ResultError(Exception):
-    """Raised by ``read_result`` when a response that arrived successfully holds a failure or no result."""
 
     code: str
     retryable: bool
@@ -49,7 +48,6 @@ class ResultError(Exception):
 
 
 class JobTimeoutError(TimeoutError):
-    """Raised by ``flows.wait()`` when ``timeout`` elapses. The job keeps running on the server."""
 
     flow: str
     job_id: str

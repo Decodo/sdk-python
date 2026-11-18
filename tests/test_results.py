@@ -9,7 +9,6 @@ import pytest
 from decodo.api.results import check_result_rule, read_result
 from decodo.errors import ResultError
 
-# The result rules Decodo publishes for the google-adk-python surface, cut from the IR built for 2.6.0.
 IR = json.loads((Path(__file__).parent / "schema" / "fixtures" / "flows_ir.json").read_text(encoding="utf-8"))
 RULES = {tool["name"]: tool.get("result") for tool in IR["surfaces"]["google-adk-python"]["tools"]}
 SCRAPE, SEARCH, MAP, CRAWL = (

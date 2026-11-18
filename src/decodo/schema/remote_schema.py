@@ -84,7 +84,6 @@ def _load_ir(options: RemoteSchemaLoadOptions) -> RemoteIr:
 
 
 def _is_cache_of(cached: CachedIr, url: str | None) -> bool:
-    """Whether the cache holds what was asked for: that URL, or a published IR when no URL is given."""
     resolved_url = cached.get("resolved_url") or ""
     if url:
         return resolved_url == url

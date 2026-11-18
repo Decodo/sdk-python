@@ -1,10 +1,3 @@
-"""Reads a response the way a Decodo IR result rule says to.
-
-A rule names what in a successful response is still a failure, which part of it
-is the result, and which fields to return. Rules are data published with the
-IR, so how a response is read can change without a change to the caller.
-"""
-
 from __future__ import annotations
 
 from collections.abc import Mapping
@@ -18,7 +11,6 @@ _SERVER_ERROR = 500
 
 
 def _at(value: Any, path: str) -> Any:
-    """The value at a dotted path: a number indexes a list, ``*`` reads the rest from every item."""
     segment, _, rest = path.partition(".")
     if segment == "*":
         if not isinstance(value, list):
@@ -71,8 +63,6 @@ def _picked(item: Any, rule: Mapping[str, Any]) -> Any:
 
 
 def read_result(rule: Mapping[str, Any] | None, response: Any) -> Any:
-    """The result in ``response`` as ``rule`` describes it. Raises ``ResultError`` when the rule
-    finds a failure in it, or finds no result."""
     if not rule:
         return response
     for failure in rule.get("failures") or ():
@@ -87,7 +77,6 @@ def read_result(rule: Mapping[str, Any] | None, response: Any) -> Any:
 
 
 def check_result_rule(rule: Any) -> None:
-    """Raises ``TypeError`` unless ``rule`` has the form ``read_result`` understands."""
     if not isinstance(rule, Mapping):
         raise TypeError("the result rule is not an object")
     failures = rule.get("failures") or []

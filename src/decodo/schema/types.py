@@ -87,29 +87,21 @@ class DecodoSchema(Protocol):
 
 @runtime_checkable
 class FlowSchema(Protocol):
-    """What a schema built from Decodo IR 2.6.0 or newer adds: flows, their endpoints and client surfaces."""
 
     def get_flow(self, flow: str) -> dict[str, Any] | None:
-        """How a product is run: its pattern (``call``, ``job`` or ``batch``) and the endpoints it uses."""
         ...
 
     def get_operation(self, operation: str) -> IrEndpoint | None:
-        """Method, path and request schema of one request a flow sends."""
         ...
 
     def get_key_check(self) -> dict[str, Any] | None:
-        """The request that checks an API key: a call flow and the body to send it."""
         ...
 
     def get_surface(self, client: str) -> dict[str, Any] | None:
-        """How one client presents the APIs (its tools, shown fields, defaults), keyed by its
-        ``x-integration`` value. ``None`` when the IR has no surface for that client."""
         ...
 
 
 def ir_section(ir: Any, key: str) -> dict[str, Any]:
-    """A top-level section of the IR holding named objects. Anything else, in whole or in part, is dropped:
-    an IR published after this code was written must not stop it from loading."""
     section = ir.get(key)
     if not isinstance(section, dict):
         return {}
