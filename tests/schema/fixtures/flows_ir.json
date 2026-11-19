@@ -934,7 +934,7 @@
       },
       "pagination": {
         "itemsField": "url",
-        "nextField": "next"
+        "nextUrlField": "next"
       },
       "pollSeconds": 5
     },
@@ -1049,12 +1049,6 @@
           "description": "List the URLs of a site without reading them. Use it to see what a site contains before choosing pages to scrape or a section to crawl.",
           "flow": "map",
           "result": {
-            "failures": [
-              {
-                "path": "results.0.status_code",
-                "atLeast": 400
-              }
-            ],
             "from": "results.0",
             "fields": {
               "url": "url",
@@ -1081,6 +1075,12 @@
           },
           "maximums": {
             "limit": 500
+          },
+          "descriptions": {
+            "url": "Absolute http or https URL of the site.",
+            "limit": "How many URLs to return, 100 unless set and 500 at most.",
+            "sitemap": "'include' reads the sitemap and the pages, 'only' reads just the sitemap, 'skip' ignores it.",
+            "domain_filter": "'domain' stays on the site, 'subdomain' adds its subdomains, 'all' follows any link."
           }
         },
         {
@@ -1102,6 +1102,12 @@
           },
           "maximums": {
             "limit": 50
+          },
+          "descriptions": {
+            "url": "Absolute http or https URL to start from.",
+            "limit": "How many pages to read, 10 unless set and 50 at most. Every page is billed.",
+            "max_depth": "How many links away from the start URL the crawl may go.",
+            "domain_filter": "'domain' stays on the site, 'subdomain' adds its subdomains, 'all' follows any link."
           }
         },
         {

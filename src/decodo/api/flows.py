@@ -114,7 +114,10 @@ class Flows:
             return body
 
         items: list[Any] = list((body or {}).get(pagination["itemsField"]) or [])
-        while (next_url := (body or {}).get(pagination["nextField"])) and (max_items is None or len(items) < max_items):
+        while max_items is None or len(items) < max_items:
+            next_url = (body or {}).get(pagination["nextUrlField"])
+            if not next_url:
+                break
             parts = urlsplit(next_url)
             path = _local_path(parts.path)
             body = self._http.get(f"{path}?{parts.query}" if parts.query else path)

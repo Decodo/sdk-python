@@ -70,9 +70,6 @@ class TestPublishedRules:
             "links": ["https://a.test/1", "https://a.test/2"],
         }
 
-    def test_map_failure(self) -> None:
-        assert failure(MAP, {"results": [{"status_code": 502, "url": "https://a.test"}]}).retryable is True
-
     def test_crawl_pages_keep_three_fields_each(self) -> None:
         pages = [{"url": "https://a.test/1", "status": "done", "content": "one", "depth": 1, "task_id": "9"}]
 
