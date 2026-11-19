@@ -70,6 +70,17 @@ class TestPublishedRules:
             "links": ["https://a.test/1", "https://a.test/2"],
         }
 
+    def test_a_field_the_response_lacks_is_left_out_and_one_it_holds_is_kept(self) -> None:
+        with_warning = {
+            "results": [{"url": "https://a.test", "content": {"links": []}, "warning": "sitemap unreadable"}]
+        }
+        failed_page = [{"url": "https://a.test/1", "status": "done", "content_error": "expired"}]
+
+        assert read_result(MAP, with_warning)["warning"] == "sitemap unreadable"
+        assert read_result(CRAWL, failed_page) == [
+            {"url": "https://a.test/1", "status": "done", "content_error": "expired"}
+        ]
+
     def test_crawl_pages_keep_three_fields_each(self) -> None:
         pages = [{"url": "https://a.test/1", "status": "done", "content": "one", "depth": 1, "task_id": "9"}]
 
@@ -86,10 +97,10 @@ class TestReading:
         assert read_result(None, {"a": 1}) == {"a": 1}
         assert read_result({}, [1, 2]) == [1, 2]
 
-    def test_a_missing_field_is_none_and_a_missing_item_field_is_skipped(self) -> None:
+    def test_a_missing_field_is_left_out_and_a_missing_item_field_is_skipped(self) -> None:
         rule = {"fields": {"title": "meta.title", "tags": "tags.*.name"}}
 
-        assert read_result(rule, {"tags": [{"name": "a"}, {"id": 2}]}) == {"title": None, "tags": ["a"]}
+        assert read_result(rule, {"tags": [{"name": "a"}, {"id": 2}]}) == {"tags": ["a"]}
 
     def test_a_response_of_an_unexpected_type_is_no_result_or_passes_through(self) -> None:
         assert failure({"from": "results.0"}, ["x"]).code == "empty_response"

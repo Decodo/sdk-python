@@ -51,7 +51,8 @@ def _raise_if_failed(failure: Mapping[str, Any], response: Any) -> None:
 def _picked(item: Any, rule: Mapping[str, Any]) -> Any:
     fields = rule.get("fields")
     if fields:
-        picked = {name: None if (value := _at(item, path)) is _MISSING else value for name, path in fields.items()}
+        found = {name: _at(item, path) for name, path in fields.items()}
+        picked = {name: value for name, value in found.items() if value is not _MISSING}
         for name in rule.get("required") or ():
             if picked.get(name) in (None, "", [], {}):
                 raise ResultError(f"Decodo returned a result with no {name}.", f"empty_{name}")

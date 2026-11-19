@@ -1052,7 +1052,8 @@
             "from": "results.0",
             "fields": {
               "url": "url",
-              "links": "content.links.*.url"
+              "links": "content.links.*.url",
+              "warning": "warning"
             }
           },
           "limits": {
@@ -1119,7 +1120,8 @@
             "fields": {
               "url": "url",
               "status": "status",
-              "content": "content"
+              "content": "content",
+              "content_error": "content_error"
             }
           },
           "limits": {
