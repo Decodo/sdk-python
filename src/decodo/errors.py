@@ -36,6 +36,28 @@ class TimeoutError(Exception):
         super().__init__(message)
 
 
+class ResultError(Exception):
+
+    code: str
+    retryable: bool
+
+    def __init__(self, message: str, code: str, *, retryable: bool = False) -> None:
+        super().__init__(message)
+        self.code = code
+        self.retryable = retryable
+
+
+class JobTimeoutError(TimeoutError):
+
+    flow: str
+    job_id: str
+
+    def __init__(self, flow: str, job_id: str, timeout: float) -> None:
+        super().__init__(f"The {flow} job {job_id} was still running after {timeout:g}s.")
+        self.flow = flow
+        self.job_id = job_id
+
+
 class CrawlError(DecodoError):
     """Raised by ``crawl()`` when the crawl ends ``faulted`` or ``cancelled``."""
 

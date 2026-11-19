@@ -1,3 +1,5 @@
+from .api.flows import Flows
+from .api.results import check_result_rule, read_result
 from .api.web_scraping_api import WebScrapingApi, WebScrapingApiRoutes
 from .client import DecodoClient, DecodoConfig, WebScrapingApiConfig
 from .errors import (
@@ -6,13 +8,15 @@ from .errors import (
     CrawlInterruptedError,
     CrawlTimeoutError,
     DecodoError,
+    JobTimeoutError,
     RateLimitError,
+    ResultError,
     TimeoutError,
     ValidationError,
 )
 from .schema.bundled_schema import BundledSchema
 from .schema.remote_schema import RemoteSchema
-from .schema.types import DecodoSchema, RemoteSchemaLoadOptions
+from .schema.types import DecodoSchema, FlowSchema, RemoteSchemaLoadOptions
 from .targets import Target, targets
 from .types.data_api import (
     CrawlPage,
@@ -111,6 +115,12 @@ __all__ = [
     "CrawlError",
     "CrawlInterruptedError",
     "CrawlTimeoutError",
+    "JobTimeoutError",
+    "ResultError",
+    "read_result",
+    "check_result_rule",
+    "Flows",
+    "FlowSchema",
 ]
 
 __all__ += sorted(_CODEGEN_NAMES)

@@ -10,6 +10,7 @@ import jsonschema
 from pydantic import BaseModel
 
 import decodo.errors
+from decodo.api.flows import Flows
 from decodo.http import HttpClient
 
 if TYPE_CHECKING:
@@ -77,6 +78,7 @@ class WebScrapingApi:
         self._http = http
         self._schema = schema
         self._routes = routes
+        self.flows = Flows(http, schema, available=routes.search is not None)
 
     def _validate(self, payload: dict[str, Any]) -> None:
         if self._schema is None:

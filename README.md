@@ -513,6 +513,30 @@ client.web_scraping_api.cancel_crawl(crawl_id)
 
 `get_crawl_status` returns `pending`, `done`, `faulted`, `cancelled` or `truncated`, with a `reason` when the crawl stopped early.
 
+## Flows
+
+`client.web_scraping_api.flows` runs any product by the pattern the Decodo IR gives it, so an endpoint added to the IR works without a new SDK method. There are three patterns: `call` (one request), `job` (start, wait, read, cancel) and `batch` (one request that starts many jobs). Flows need an API key and IR 2.6.0 or newer.
+
+```python
+flows = client.web_scraping_api.flows
+
+links = flows.call("map", {"url": "https://www.example.com"})
+
+started = flows.start("crawl", {"url": "https://www.example.com", "limit": 10})
+crawl_id = started[flows.describe("crawl")["idField"]]
+status = flows.wait("crawl", crawl_id, timeout=120)
+if not flows.has_failed("crawl", status):
+    pages = flows.results("crawl", crawl_id)
+
+jobs = flows.start_batch("task_batch", {"target": "universal", "url": ["https://a.example", "https://b.example"]})
+```
+
+`wait` returns the job's final status whether it succeeded or not, and raises `JobTimeoutError` (carrying `flow` and `job_id`) when `timeout` runs out; the job keeps running. It polls at the interval the IR gives the flow (`pollSeconds`) unless you pass `poll_interval`. `cancel` works for flows that have a cancel endpoint. `results` reads every page of a paged flow unless you pass `max_items`. `search`, `map`, `crawl` and the other typed methods are unchanged.
+
+`flows.check_key()` sends the request the IR gives for checking an API key: it returns when the key was accepted and raises `AuthenticationError` when it was rejected. `read_result(rule, response)` reads a response by a result rule from a surface, raising `ResultError` when the rule finds a failure inside a successful response.
+
+A schema also exposes `get_flow(name)`, `get_operation(name)` and `get_surface(client)`. A surface is how one client presents the APIs: its tools, shown fields, defaults and caps, keyed by the client's `x-integration` value.
+
 ## Targets and parameter classes
 
 Every target in the `Target` enum has a matching parameter class. The name of the class is the enum member name followed by `Params`:
@@ -696,6 +720,7 @@ The `["results"]["results"]` nesting above is the shape returned when `parse=Tru
 | `ValidationError`     | The payload fails local schema validation, or the API returns `422`                  | `errors`, `status_code`        |
 | `TimeoutError`        | The request exceeds `timeout_ms`                                                     | none                           |
 | `CrawlTimeoutError`   | `crawl()` exceeds its `timeout`. Subclass of `TimeoutError`; the crawl keeps running | `crawl_id`                     |
+| `JobTimeoutError`     | `flows.wait()` exceeds its `timeout`. Subclass of `TimeoutError`; the job keeps running | `flow`, `job_id`               |
 | `CrawlError`          | `crawl()` ends `faulted` or `cancelled`. Subclass of `DecodoError`                   | `crawl_id`, `status`, `reason` |
 | `DecodoError`         | Any other unsuccessful response. Base class for the three errors above               | `status_code`, `api_status`    |
 

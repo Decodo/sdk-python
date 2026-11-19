@@ -9,6 +9,9 @@ from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock, patch
 
+import httpx
+import pytest
+
 from decodo.schema.constants import (
     DEFAULT_IR_BASE,
     DEFAULT_IR_LIST_URL,
@@ -221,3 +224,120 @@ class TestRemoteSchemaDataApi:
         schema = RemoteSchema(ir, {})
 
         assert schema.get_endpoint_request_schema("runSearch") is None
+
+
+def _latest_cache(version: str = "1.0.0", *, age_ms: int = 0) -> CachedIr:
+    import time
+
+    return CachedIr(
+        fetched_at=int(time.time() * 1000) - age_ms,
+        resolved_url=f"{DEFAULT_IR_BASE}/{DEFAULT_IR_PREFIX}{version}.json",
+        ir=_clone_ir(version),
+    )
+
+
+class TestRemoteSchemaOffline:
+    def test_fresh_cache_of_the_latest_ir_is_used_without_any_request(self) -> None:
+        with _temp_cache_dir() as cache_path:
+            _write_cached_ir(cache_path, _latest_cache())
+
+            with patch("httpx.get", side_effect=AssertionError("no request expected")):
+                schema = RemoteSchema.load(RemoteSchemaLoadOptions(cache_path=cache_path, ttl_ms=60_000))
+
+            assert schema.version == "1.0.0"
+
+    def test_stale_cache_is_used_when_the_versions_cannot_be_listed(self) -> None:
+        with _temp_cache_dir() as cache_path:
+            _write_cached_ir(cache_path, _latest_cache(age_ms=120_000))
+
+            with patch("httpx.get", side_effect=httpx.ConnectError("offline")):
+                schema = RemoteSchema.load(RemoteSchemaLoadOptions(cache_path=cache_path, ttl_ms=60_000))
+
+            assert schema.version == "1.0.0"
+
+    def test_stale_cache_is_used_when_the_new_ir_cannot_be_fetched(self) -> None:
+        def fake_get(url: str, **kwargs: Any) -> MagicMock:
+            if url == DEFAULT_IR_LIST_URL:
+                return _make_response({"items": [{"name": f"{DEFAULT_IR_PREFIX}2.0.0.json"}]})
+            return _make_response({}, status=503)
+
+        with _temp_cache_dir() as cache_path:
+            _write_cached_ir(cache_path, _latest_cache(age_ms=120_000))
+
+            with patch("httpx.get", side_effect=fake_get):
+                schema = RemoteSchema.load(RemoteSchemaLoadOptions(cache_path=cache_path, ttl_ms=60_000))
+
+            assert schema.version == "1.0.0"
+
+    def test_raises_when_offline_with_no_cache(self) -> None:
+        with _temp_cache_dir() as cache_path:
+            with patch("httpx.get", side_effect=httpx.ConnectError("offline")):
+                with pytest.raises(httpx.ConnectError):
+                    RemoteSchema.load(RemoteSchemaLoadOptions(cache_path=cache_path))
+
+    def test_cache_of_another_url_is_not_used_when_the_requested_url_fails(self) -> None:
+        with _temp_cache_dir() as cache_path:
+            _write_cached_ir(cache_path, _latest_cache())
+
+            with patch("httpx.get", side_effect=httpx.ConnectError("offline")):
+                with pytest.raises(httpx.ConnectError):
+                    RemoteSchema.load(RemoteSchemaLoadOptions(url=IR_URL, cache_path=cache_path))
+
+
+class TestRemoteSchemaCacheOwnership:
+    def test_cache_of_a_pinned_url_is_not_served_as_the_latest_ir(self) -> None:
+        import time
+
+        def fake_get(url: str, **kwargs: Any) -> MagicMock:
+            if url == DEFAULT_IR_LIST_URL:
+                return _make_response({"items": [{"name": f"{DEFAULT_IR_PREFIX}2.0.0.json"}]})
+            return _make_response(_clone_ir("2.0.0"))
+
+        with _temp_cache_dir() as cache_path:
+            pinned = CachedIr(fetched_at=int(time.time() * 1000), resolved_url=IR_URL, ir=_clone_ir("0.9.0"))
+            _write_cached_ir(cache_path, pinned)
+
+            with patch("httpx.get", side_effect=fake_get):
+                schema = RemoteSchema.load(RemoteSchemaLoadOptions(cache_path=cache_path, ttl_ms=60_000))
+
+            assert schema.version == "2.0.0"
+
+    def test_cache_of_a_pinned_url_is_not_used_offline_for_the_latest_ir(self) -> None:
+        import time
+
+        with _temp_cache_dir() as cache_path:
+            pinned = CachedIr(fetched_at=int(time.time() * 1000), resolved_url=IR_URL, ir=_clone_ir("0.9.0"))
+            _write_cached_ir(cache_path, pinned)
+
+            with patch("httpx.get", side_effect=httpx.ConnectError("offline")):
+                with pytest.raises(httpx.ConnectError):
+                    RemoteSchema.load(RemoteSchemaLoadOptions(cache_path=cache_path, ttl_ms=60_000))
+
+    def test_a_stale_cache_confirmed_as_latest_is_fresh_again(self) -> None:
+        requests: list[str] = []
+
+        def fake_get(url: str, **kwargs: Any) -> MagicMock:
+            requests.append(url)
+            return _make_response({"items": [{"name": f"{DEFAULT_IR_PREFIX}1.0.0.json"}]})
+
+        with _temp_cache_dir() as cache_path:
+            _write_cached_ir(cache_path, _latest_cache(age_ms=120_000))
+            options = RemoteSchemaLoadOptions(cache_path=cache_path, ttl_ms=60_000)
+
+            with patch("httpx.get", side_effect=fake_get):
+                RemoteSchema.load(options)
+                RemoteSchema.load(options)
+
+            assert requests == [DEFAULT_IR_LIST_URL]
+
+    def test_cached_copy_is_used_when_the_listing_is_not_json(self) -> None:
+        broken = _make_response(None)
+        broken.json.side_effect = ValueError("not json")
+
+        with _temp_cache_dir() as cache_path:
+            _write_cached_ir(cache_path, _latest_cache(age_ms=120_000))
+
+            with patch("httpx.get", return_value=broken), pytest.warns(RuntimeWarning, match="cached copy"):
+                schema = RemoteSchema.load(RemoteSchemaLoadOptions(cache_path=cache_path, ttl_ms=60_000))
+
+            assert schema.version == "1.0.0"
