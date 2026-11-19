@@ -23,6 +23,7 @@ result = client.web_scraping_api.scrape(
         url='https://www.example.com',
         geo='United States',
         markdown=True,
+        main_content=True,
     )
 )
 
