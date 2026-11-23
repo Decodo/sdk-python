@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import contextlib
 import json
 import os
 import time
@@ -99,7 +100,8 @@ def _refresh_ir(options: RemoteSchemaLoadOptions, cache_path: str, cached: Cache
             return cached["ir"]
 
         if options.get("url") or cached["ir"].get("version") == resolved_version:
-            _write_cached_ir(cache_path, CachedIr(**{**cached, "fetched_at": int(time.time() * 1000)}))
+            with contextlib.suppress(OSError):
+                _write_cached_ir(cache_path, CachedIr(**{**cached, "fetched_at": int(time.time() * 1000)}))
             return cached["ir"]
 
     ir = _fetch_ir(resolved_url)

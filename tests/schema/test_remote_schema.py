@@ -330,6 +330,20 @@ class TestRemoteSchemaCacheOwnership:
 
             assert requests == [DEFAULT_IR_LIST_URL]
 
+    def test_a_stale_cache_confirmed_as_latest_loads_when_it_cannot_be_rewritten(self) -> None:
+        listing = _make_response({"items": [{"name": f"{DEFAULT_IR_PREFIX}1.0.0.json"}]})
+
+        with _temp_cache_dir() as cache_path:
+            _write_cached_ir(cache_path, _latest_cache(age_ms=120_000))
+
+            with (
+                patch("httpx.get", return_value=listing),
+                patch("decodo.schema.remote_schema._write_cached_ir", side_effect=PermissionError("read-only")),
+            ):
+                schema = RemoteSchema.load(RemoteSchemaLoadOptions(cache_path=cache_path, ttl_ms=60_000))
+
+            assert schema.version == "1.0.0"
+
     def test_cached_copy_is_used_when_the_listing_is_not_json(self) -> None:
         broken = _make_response(None)
         broken.json.side_effect = ValueError("not json")

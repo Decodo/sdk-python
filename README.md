@@ -528,7 +528,7 @@ status = flows.wait("crawl", crawl_id, timeout=120)
 if not flows.has_failed("crawl", status):
     pages = flows.results("crawl", crawl_id)
 
-jobs = flows.start_batch("task_batch", {"target": "universal", "url": ["https://a.example", "https://b.example"]})
+jobs = flows.start_batch("task_batch", {"target": "universal", "url": ["https://www.example.com", "https://www.example.org"]})
 ```
 
 `wait` returns the job's final status whether it succeeded or not, and raises `JobTimeoutError` (carrying `flow` and `job_id`) when `timeout` runs out; the job keeps running. It polls at the interval the IR gives the flow (`pollSeconds`) unless you pass `poll_interval`. `cancel` works for flows that have a cancel endpoint. `results` reads every page of a paged flow unless you pass `max_items`. `search`, `map`, `crawl` and the other typed methods are unchanged.
