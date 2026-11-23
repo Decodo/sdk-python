@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Any, Protocol
+from typing import Any, Protocol, runtime_checkable
 
-from typing_extensions import Required, TypedDict
+from typing_extensions import NotRequired, Required, TypedDict
 
 
 class TargetMeta(TypedDict):
@@ -20,6 +20,9 @@ class IrTarget(TypedDict):
 class RemoteIr(TypedDict):
     version: str
     apis: RemoteIrApis
+    operations: NotRequired[dict[str, IrEndpoint]]
+    flows: NotRequired[dict[str, dict[str, Any]]]
+    surfaces: NotRequired[dict[str, dict[str, Any]]]
 
 
 class RemoteIrApis(TypedDict, total=False):
@@ -80,6 +83,29 @@ class DecodoSchema(Protocol):
 
     @property
     def version(self) -> str | None: ...
+
+
+@runtime_checkable
+class FlowSchema(Protocol):
+
+    def get_flow(self, flow: str) -> dict[str, Any] | None:
+        ...
+
+    def get_operation(self, operation: str) -> IrEndpoint | None:
+        ...
+
+    def get_key_check(self) -> dict[str, Any] | None:
+        ...
+
+    def get_surface(self, client: str) -> dict[str, Any] | None:
+        ...
+
+
+def ir_section(ir: Any, key: str) -> dict[str, Any]:
+    section = ir.get(key)
+    if not isinstance(section, dict):
+        return {}
+    return {name: value for name, value in section.items() if isinstance(value, dict)}
 
 
 def build_endpoint_request_schemas(ir: RemoteIr) -> dict[str, dict[str, Any]]:

@@ -9,7 +9,14 @@ from typing import Any, ClassVar, cast
 from decodo.targets import targets
 
 from .build_target_meta import build_target_meta
-from .types import DecodoSchema, RemoteIr, TargetMeta, build_endpoint_request_schemas
+from .types import (
+    DecodoSchema,
+    IrEndpoint,
+    RemoteIr,
+    TargetMeta,
+    build_endpoint_request_schemas,
+    ir_section,
+)
 
 
 def _load_target_meta() -> dict[str, Any] | None:
@@ -61,6 +68,11 @@ class BundledSchema:
             }
             self._target_meta = _target_meta if _target_meta is not None else build_target_meta(api_targets)
             self._endpoint_schemas = build_endpoint_request_schemas(cast(RemoteIr, ir))
+            self._operations = ir_section(ir, "operations")
+            self._flows = ir_section(ir, "flows")
+            self._surfaces = ir_section(ir, "surfaces")
+            key_check = ir.get("keyCheck")
+            self._key_check: dict[str, Any] | None = key_check if isinstance(key_check, dict) else None
         else:
             warnings.warn(
                 "Decodo IR schema not found — payload validation is disabled. "
@@ -72,6 +84,10 @@ class BundledSchema:
             self._request_schemas = {}
             self._target_meta = _target_meta or {}
             self._endpoint_schemas = {}
+            self._operations = {}
+            self._flows = {}
+            self._surfaces = {}
+            self._key_check = None
 
     def get_request_schema(self, target: str) -> dict[str, Any] | None:
         return self._request_schemas.get(target)
@@ -90,6 +106,18 @@ class BundledSchema:
 
     def get_endpoint_request_schema(self, endpoint: str) -> dict[str, Any] | None:
         return self._endpoint_schemas.get(endpoint)
+
+    def get_flow(self, flow: str) -> dict[str, Any] | None:
+        return self._flows.get(flow)
+
+    def get_operation(self, operation: str) -> IrEndpoint | None:
+        return cast(IrEndpoint | None, self._operations.get(operation))
+
+    def get_key_check(self) -> dict[str, Any] | None:
+        return self._key_check
+
+    def get_surface(self, client: str) -> dict[str, Any] | None:
+        return self._surfaces.get(client)
 
     @property
     def version(self) -> str | None:
