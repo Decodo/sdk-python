@@ -20,7 +20,7 @@ Build scraping workflows for search engines, eCommerce platforms, social media, 
 
 # What is Decodo Python SDK?
 
-Decodo Python SDK is the official Python SDK for the Decodo Web Scraping API. It provides a typed interface for interacting with Decodo targets like Google, Amazon, TikTok, Reddit, YouTube, ChatGPT, Perplexity, and more.
+Decodo Python SDK is the official Python SDK for the Decodo Web Scraping API. It provides a typed interface for interacting with Decodo targets like Google, Amazon, TikTok, YouTube, ChatGPT, Perplexity, and more.
 
 Instead of manually constructing HTTP requests and validating payloads, you can work with fully typed methods and target-specific parameters directly in your editor.
 
@@ -595,9 +595,6 @@ Each target accepts one primary input parameter (`url`, `query`, `product_id`, o
 
 | Target                           | Parameter class                 | Description                            | Example input                                 |
 | -------------------------------- | ------------------------------- | -------------------------------------- | --------------------------------------------- |
-| `Target.RedditPost`              | `RedditPostParams`              | Reddit post by URL                     | `url="https://reddit.com/r/nba/comments/..."` |
-| `Target.RedditSubreddit`         | `RedditSubredditParams`         | Reddit subreddit by URL                | `url="https://reddit.com/r/nba/"`             |
-| `Target.RedditUser`              | `RedditUserParams`              | Reddit user profile by URL             | `url="https://reddit.com/user/example/"`      |
 | `Target.YoutubeSearch`           | `YoutubeSearchParams`           | YouTube search results                 | `query="ambient music"`                       |
 | `Target.YoutubeMetadata`         | `YoutubeMetadataParams`         | YouTube video metadata by ID           | `query="dFu9aKJoqGg"`                         |
 | `Target.YoutubeSubtitles`        | `YoutubeSubtitlesParams`        | YouTube video subtitles by ID          | `query="dFu9aKJoqGg"`                         |
