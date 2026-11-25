@@ -28,7 +28,6 @@ class Target(StrEnum):
     Target = "target"
     Universal = "universal"
     Chatgpt = "chatgpt"
-    Perplexity = "perplexity"
     Gemini = "gemini"
     Bbb = "bbb"
     Autotrader = "autotrader"
