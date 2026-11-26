@@ -20,7 +20,7 @@ Build scraping workflows for search engines, eCommerce platforms, social media, 
 
 # What is Decodo Python SDK?
 
-Decodo Python SDK is the official Python SDK for the Decodo Web Scraping API. It provides a typed interface for interacting with Decodo targets like Google, Amazon, TikTok, YouTube, ChatGPT, Perplexity, and more.
+Decodo Python SDK is the official Python SDK for the Decodo Web Scraping API. It provides a typed interface for interacting with Decodo targets like Google, Amazon, TikTok, YouTube, ChatGPT, and more.
 
 Instead of manually constructing HTTP requests and validating payloads, you can work with fully typed methods and target-specific parameters directly in your editor.
 
@@ -609,7 +609,6 @@ Each target accepts one primary input parameter (`url`, `query`, `product_id`, o
 | Target                | Parameter class      | Description                      | Example input                                 |
 | --------------------- | -------------------- | -------------------------------- | --------------------------------------------- |
 | `Target.Chatgpt`      | `ChatgptParams`      | ChatGPT response for a prompt    | `prompt="What are the top three dog breeds?"` |
-| `Target.Perplexity`   | `PerplexityParams`   | Perplexity response for a prompt | `prompt="What causes seasonal allergies?"`    |
 | `Target.Gemini`       | `GeminiParams`       | Gemini response for a prompt     | `prompt="What are the top three dog breeds?"` |
 | `Target.GoogleAiMode` | `GoogleAiModeParams` | Google AI Mode response          | `query="What are the top three dog breeds?"`  |
 
